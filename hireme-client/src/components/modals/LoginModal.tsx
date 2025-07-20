@@ -33,8 +33,8 @@ export function LoginModal({
           <DialogTitle className="text-primary">Đăng nhập</DialogTitle>
           <div className="w-max mx-auto">
             <DialogDescription className="animate-typing overflow-hidden whitespace-nowrap">
-              Chào mừng đến với thế giới từ vựng của{" "}
-              <span className="text-secondary font-semibold">LexiBoost</span>
+              Chào mừng đến với thế giới việc làm của{" "}
+              <span className="text-secondary font-semibold">HireMe</span>
             </DialogDescription>
           </div>
         </DialogHeader>
