@@ -1,5 +1,4 @@
 import { MdOutlineLogin } from "react-icons/md";
-import { FcGoogle } from "react-icons/fc";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,28 +12,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-interface LoginModalProps {
+interface RegisterModalProps {
   open: boolean;
   onClose: () => void;
-  onRegister: () => void;
+  onLogin: () => void;
   onForgotPassword: () => void;
 }
 
-export function LoginModal({
+export function RegisterModal({
   open,
   onClose,
-  onRegister,
+  onLogin,
   onForgotPassword,
-}: LoginModalProps) {
+}: RegisterModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-white">
         <DialogHeader className="!text-center">
-          <DialogTitle className="text-primary">Đăng nhập</DialogTitle>
+          <DialogTitle className="text-primary">Đăng ký</DialogTitle>
           <div className="w-max mx-auto">
             <DialogDescription className="animate-typing overflow-hidden whitespace-nowrap">
               Chào mừng đến với thế giới từ vựng của{" "}
-              <span className="text-secondary font-semibold">LexiBoost</span>
+              <span className="text-primary font-semibold">LexiBoost</span>
             </DialogDescription>
           </div>
         </DialogHeader>
@@ -51,8 +50,30 @@ export function LoginModal({
             />
           </div>
           <div className="grid flex-1 gap-2">
+            <Label htmlFor="name" className="">
+              Tên
+            </Label>
+            <Input
+              id="name"
+              placeholder="Nhập tên của bạn"
+              className="w-full focus:border-primary focus:ring-primary"
+              type="name"
+            />
+          </div>
+          <div className="grid flex-1 gap-2">
             <Label htmlFor="password" className="">
               Mật khẩu
+            </Label>
+            <Input
+              id="password"
+              placeholder="Nhập mật khẩu của bạn"
+              className="w-full focus:border-primary focus:ring-primary"
+              type="password"
+            />
+          </div>
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="password" className="">
+              Nhập lại mật khẩu
             </Label>
             <Input
               id="password"
@@ -68,32 +89,21 @@ export function LoginModal({
             variant="default"
             className="text-white flex items-center gap-1"
           >
-            <p className="mt-[-3px] hover:cursor-pointer">Đăng nhập</p>
-            <MdOutlineLogin className="inline-block" />
+            <p className="mt-[-3px] hover:cursor-pointer">Đăng ký</p>
+            <MdOutlineLogin className="inline-block rotate-180" />
           </Button>
           <div className="w-full flex gap-2 items-center !ml-0">
             <div className="w-full border-t border-gray-300 my-2"></div>
             <p className="text-gray-500 text-xs">hoặc</p>
             <div className="w-full border-t border-gray-300 my-2"></div>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="flex gap-2 items-center"
-          >
-            <FcGoogle className="w-5 h-5" />
-            <p className="text-sm hover:cursor-pointer">
-              Đăng nhập nhanh với tài khoản Google
-            </p>
-          </Button>
-
           <p className="text-xs text-gray-700 mt-3">
-            Nếu chưa có tài khoản,{" "}
+            Nếu đã có tài khoản,{" "}
             <span
               className="text-black font-medium hover:text-primary hover:cursor-pointer"
-              onClick={onRegister}
+              onClick={onLogin}
             >
-              đăng ký
+              đăng nhập
             </span>{" "}
             tại đây!
           </p>
