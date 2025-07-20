@@ -14,9 +14,9 @@ export default function Header() {
 
   return (
     <header className="bg-white text-black p-4 flex justify-between items-center shadow-md">
-      <h1 className="text-2xl font-bold">
+      <h5 className="text-2xl font-bold">
         <span className="text-primary">Hire</span>Me
-      </h1>
+      </h5>
       <nav className="mt-2">
         <ul className="flex space-x-4">
           <Link href="/">

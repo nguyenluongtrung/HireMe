@@ -32,8 +32,8 @@ export function RegisterModal({
           <DialogTitle className="text-primary">Đăng ký</DialogTitle>
           <div className="w-max mx-auto">
             <DialogDescription className="animate-typing overflow-hidden whitespace-nowrap">
-              Chào mừng đến với thế giới từ vựng của{" "}
-              <span className="text-primary font-semibold">LexiBoost</span>
+              Chào mừng đến với thế giới việc làm của{" "}
+              <span className="text-primary font-semibold">HireMe</span>
             </DialogDescription>
           </div>
         </DialogHeader>
