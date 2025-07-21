@@ -53,6 +53,7 @@ export default function Home() {
           {JOB_SEEKING_STEPS.map((step, index) => (
             <JobSeekingStep
               key={index}
+              index={index}
               icon={step.icon}
               title={step.title}
               description={step.description}

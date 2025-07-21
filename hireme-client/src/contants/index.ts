@@ -33,3 +33,11 @@ export const JOB_SEEKING_STEPS = [
       "Ngoài các công cụ chính, người dùng còn được cập nhật tin tức thị trường lao động, nhận lời khuyên phát triển kỹ năng và định hướng nghề nghiệp phù hợp.",
   },
 ];
+
+export const STEP_COLOR_PAIRS = [
+  { bg: "bg-purple-100", text: "text-purple-900" },
+  { bg: "bg-pink-100", text: "text-pink-900" },
+  { bg: "bg-green-100", text: "text-green-900" },
+  { bg: "bg-yellow-100", text: "text-yellow-900" },
+  { bg: "bg-sky-100", text: "text-sky-900" },
+];
