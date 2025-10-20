@@ -24,9 +24,9 @@ export default function Header() {
               Trang chủ
             </li>
           </Link>
-          <li className="hover:cursor-pointer hover:text-blue-500">Tìm việc</li>
+          <li className="hover:cursor-pointer hover:text-blue-500">Nâng cấp CV</li>
           <li className="hover:cursor-pointer hover:text-blue-500">
-            Nâng cấp CV
+            Luyện phỏng vấn
           </li>
           <li
             className="hover:cursor-pointer hover:text-blue-500"

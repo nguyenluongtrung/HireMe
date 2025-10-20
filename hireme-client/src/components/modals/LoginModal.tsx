@@ -1,7 +1,5 @@
 import { MdOutlineLogin } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 
-import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
+import { useLogin } from "@/hooks/auth/login/useLogin";
 
-import { useLoginMutation } from "@/hooks/useAuth";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "@/lib/validators";
 
 interface LoginModalProps {
   open: boolean;
@@ -33,31 +30,11 @@ export function LoginModal({
   onRegister,
   onForgotPassword,
 }: LoginModalProps) {
-  const loginMutation = useLoginMutation();
-  const form = useForm<LoginBodyType>({
-    resolver: zodResolver(LoginBody),
-    defaultValues: {
-      email: '',
-      password: ''
+  const { form, control, isSubmitting, handleSubmit, onSubmit, errors } = useLogin({
+    onSuccess: () => {
+      onClose();
     }
   });
-
-  const onSubmit = (data: LoginBodyType) => {
-    loginMutation.mutateAsync(data, {
-      onSuccess: () => {
-        toast('Đăng nhập thành công!', {
-          type: 'success'
-        })
-        onClose();
-      },
-      onError: () => {
-        toast('Đăng nhập thất bại!', {
-          type: 'error'
-        })
-      }
-    })
-  };
-  console.log(form.formState.errors)
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -65,7 +42,7 @@ export function LoginModal({
         <Form {...form}>
           <form
             noValidate
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             className='space-y-4'
           >
             <DialogHeader className="!text-center">
@@ -79,8 +56,9 @@ export function LoginModal({
             </DialogHeader>
             <div className="flex flex-col gap-2">
               <FormField
-                control={form.control}
+                control={control}
                 name="email"
+                rules={EMAIL_VALIDATION}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -88,7 +66,7 @@ export function LoginModal({
                       <Input
                         id="email"
                         placeholder="Nhập email của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${form.formState.errors.email && 'border-error focus:border-error focus:ring-error'}`}
+                        className={`w-full focus:border-primary focus:ring-primary ${errors.email && 'border-error focus:border-error focus:ring-error'}`}
                         type="email"
                         {...field}
                       />
@@ -98,8 +76,9 @@ export function LoginModal({
                 )}
               />
               <FormField
-                control={form.control}
+                control={control}
                 name="password"
+                rules={PASSWORD_VALIDATION}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Mật khẩu</FormLabel>
@@ -107,7 +86,7 @@ export function LoginModal({
                       <Input
                         id="password"
                         placeholder="Nhập mật khẩu của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${form.formState.errors.password && 'border-error focus:border-error focus:ring-error'}`}
+                        className={`w-full focus:border-primary focus:ring-primary ${errors.password && 'border-error focus:border-error focus:ring-error'}`}
                         type="password"
                         {...field}
                       />
@@ -121,6 +100,7 @@ export function LoginModal({
               <Button
                 type="submit"
                 variant="default"
+                disabled={isSubmitting}
                 className="text-white flex items-center gap-1"
               >
                 <p className="mt-[-3px] hover:cursor-pointer">Đăng nhập</p>
