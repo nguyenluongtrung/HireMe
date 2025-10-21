@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { ToastContainer } from "react-toastify";
-
-import AppProvider from "@/providers/app-provider";
+import { ToastProvider } from "@/providers/ToastProvider";
+import { LoadingProvider } from "@/providers/LoadingProvider";
+import { SessionCacheProvider } from "@/providers/SessionCacheProvider";
+import QueryProvider from "@/providers/QueryProvider";
+import { GlobalStateProvider } from "@/providers/GlobalStateProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 import "./globals.css";
 
@@ -32,8 +35,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppProvider>{children}</AppProvider>
-        <ToastContainer />
+        <AuthProvider>
+          <SessionCacheProvider>
+            <GlobalStateProvider>
+              <QueryProvider>
+                <LoadingProvider>
+                  <ToastProvider> {children}</ToastProvider>
+                </LoadingProvider>
+              </QueryProvider>
+            </GlobalStateProvider>
+          </SessionCacheProvider>
+        </AuthProvider>
       </body>
     </html>
   );

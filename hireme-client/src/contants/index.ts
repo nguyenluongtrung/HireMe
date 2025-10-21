@@ -1,13 +1,24 @@
 import { GiArchiveRegister } from "react-icons/gi";
-import { MdOutlineRecommend, MdSpatialTracking, MdTipsAndUpdates } from "react-icons/md";
-import { TbAnalyze } from "react-icons/tb";
+import {
+  MdOutlineRecommend,
+  MdOutlineUploadFile,
+  MdSpatialTracking,
+  MdTipsAndUpdates,
+} from "react-icons/md";
+import { TbAnalyze, TbFileCheck } from "react-icons/tb";
 
 export const JOB_SEEKING_STEPS = [
   {
     icon: GiArchiveRegister,
-    title: "Đăng ký & tạo hồ sơ",
+    title: "Đăng ký & tạo tài khoản",
     description:
-      "Người dùng nhanh chóng đăng ký tài khoản bằng email hoặc mạng xã hội",
+      "Người dùng đăng ký nhanh bằng email để bắt đầu quá trình cải thiện CV.",
+  },
+  {
+    icon: MdOutlineUploadFile,
+    title: "Tải CV lên hệ thống",
+    description:
+      "Chỉ cần tải lên file CV hiện tại (PDF, DOCX), hệ thống sẽ tự động đọc và xử lý nội dung.",
   },
   {
     icon: TbAnalyze,
@@ -17,20 +28,15 @@ export const JOB_SEEKING_STEPS = [
   },
   {
     icon: MdOutlineRecommend,
-    title: "Gợi ý công việc phù hợp",
-    description: "Dựa trên hồ sơ và mong muốn của người dùng, HireMe đề xuất danh sách việc làm phù hợp nhất, tiết kiệm thời gian tìm kiếm thủ công.",
+    title: "Gợi ý cải thiện chi tiết",
+    description:
+      "AI đề xuất chỉnh sửa câu từ, bổ sung kỹ năng, cải thiện định dạng và tăng khả năng gây ấn tượng với nhà tuyển dụng.",
   },
   {
-    icon: MdSpatialTracking,
-    title: "Theo dõi quá trình ứng tuyển",
+    icon: TbFileCheck,
+    title: "Xem & tải CV đã tối ưu",
     description:
-      "HireMe cung cấp giao diện trực quan để người dùng quản lý danh sách công việc đã ứng tuyển, trạng thái hồ sơ và lịch sử phỏng vấn.",
-  },
-  {
-    icon: MdTipsAndUpdates,
-    title: "Nhận tư vấn nghề nghiệp & cập nhật xu hướng",
-    description:
-      "Ngoài các công cụ chính, người dùng còn được cập nhật tin tức thị trường lao động, nhận lời khuyên phát triển kỹ năng và định hướng nghề nghiệp phù hợp.",
+      "Người dùng xem bản CV được cải thiện, tùy chỉnh thêm nếu cần và tải xuống phiên bản hoàn thiện.",
   },
 ];
 
@@ -41,3 +47,5 @@ export const STEP_COLOR_PAIRS = [
   { bg: "bg-yellow-100", text: "text-yellow-900" },
   { bg: "bg-sky-100", text: "text-sky-900" },
 ];
+
+export const TOAST_DURATION = 3000;
