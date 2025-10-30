@@ -4,10 +4,12 @@ import { HashingService } from "src/shared/services/hashing.service"
 import { TokenService } from "src/shared/services/token.service"
 import { AccessTokenPayloadCreate } from "src/shared/types/jwt.type"
 import { InvalidPasswordException } from "src/shared/error"
+import { SharedRoleRepository } from "src/shared/repositories/shared-role.repo"
+import { isUniqueConstraintPrismaError } from "src/shared/helpers"
 
-import { LoginBodyType } from "./auth.model"
+import { LoginBodyType, RegisterBodyType } from "./auth.model"
 import { AuthRepository } from "./auth.repo"
-import { EmailNotFoundException } from "./auth.error"
+import { EmailAlreadyExistsException, EmailNotFoundException } from "./auth.error"
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly authRepository: AuthRepository,
     private readonly tokenService: TokenService,
+    private readonly sharedRoleRepository: SharedRoleRepository,
   ) {}
 
   async login(body: LoginBodyType) {
@@ -39,6 +42,26 @@ export class AuthService {
       roleName: user.role.name,
     })
     return tokens
+  }
+
+  async register(body: RegisterBodyType) {
+    try {
+      const clientRoleId = await this.sharedRoleRepository.getUserRoleId()
+      const hashedPassword = await this.hashingService.hash(body.password)
+      const user = await this.authRepository.createUser({
+        email: body.email,
+        name: body.name,
+        phoneNumber: body.phoneNumber,
+        password: hashedPassword,
+        roleId: clientRoleId,
+      })
+      return user
+    } catch (error) {
+      if (isUniqueConstraintPrismaError(error)) {
+        throw EmailAlreadyExistsException
+      }
+      throw error
+    }
   }
 
   async generateTokens({ userId, roleId, roleName }: AccessTokenPayloadCreate) {

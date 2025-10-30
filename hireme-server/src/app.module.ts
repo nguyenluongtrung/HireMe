@@ -4,9 +4,10 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { SharedModule } from './shared/shared.module'
 import { AuthModule } from './routes/auth/auth.module'
+import { RoleModule } from './routes/role/role.module'
 
 @Module({
-  imports: [SharedModule, AuthModule],
+  imports: [SharedModule, AuthModule, RoleModule, ],
   controllers: [AppController],
   providers: [AppService],
 })
