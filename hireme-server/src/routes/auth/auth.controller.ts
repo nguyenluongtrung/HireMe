@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Post } from "@nestjs/common"
+import { Body, Controller, Get, Patch, Post } from "@nestjs/common"
 import { ZodResponse } from "nestjs-zod"
 
 import { Auth, IsPublic } from "src/shared/decorators/auth.decorator"
 import { ActiveUser } from "src/shared/decorators/active-user.decorator"
+import { AuthType } from "src/shared/constants/auth.constant"
 
 import { AuthService } from "./auth.service"
-import { GetMeResDTO, LoginBodyDTO, LoginResDTO, RegisterBodyDTO, RegisterResDTO } from "./auth.dto"
-import { AuthType } from "src/shared/constants/auth.constant"
+import { GetMeResDTO, LoginBodyDTO, LoginResDTO, RegisterBodyDTO, RegisterResDTO, UpdateMeBodyDTO, UpdateMeResDTO } from "./auth.dto"
 
 @Controller("auth")
 export class AuthController {
@@ -31,5 +31,12 @@ export class AuthController {
   @ZodResponse({type: GetMeResDTO})
   getMe(@ActiveUser('userId') userId: number) {
     return this.authService.getMe(userId)
+  }
+
+  @Patch('me')
+  @Auth([AuthType.Bearer])
+  @ZodResponse({type: UpdateMeResDTO})
+  updateMe(@ActiveUser('userId') userId: number, @Body() body: UpdateMeBodyDTO) {
+    return this.authService.updateMe(body, userId)
   }
 }
