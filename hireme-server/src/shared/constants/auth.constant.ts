@@ -20,3 +20,5 @@ export const UserStatus = {
 } as const
 
 export const REQUEST_USER_KEY = 'user'
+
+export const REQUEST_ROLE_PERMISSIONS = 'role_permissions'

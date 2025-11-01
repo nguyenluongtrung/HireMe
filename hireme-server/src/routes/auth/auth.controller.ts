@@ -1,10 +1,12 @@
-import { Body, Controller, Post } from "@nestjs/common"
-import { ZodResponse, ZodSerializerDto } from "nestjs-zod"
+import { Body, Controller, Get, Post } from "@nestjs/common"
+import { ZodResponse } from "nestjs-zod"
 
-import { IsPublic } from "src/shared/decorators/auth.decorator"
+import { Auth, IsPublic } from "src/shared/decorators/auth.decorator"
+import { ActiveUser } from "src/shared/decorators/active-user.decorator"
 
 import { AuthService } from "./auth.service"
-import { LoginBodyDTO, LoginResDTO, RegisterBodyDTO, RegisterResDTO } from "./auth.dto"
+import { GetMeResDTO, LoginBodyDTO, LoginResDTO, RegisterBodyDTO, RegisterResDTO } from "./auth.dto"
+import { AuthType } from "src/shared/constants/auth.constant"
 
 @Controller("auth")
 export class AuthController {
@@ -22,5 +24,12 @@ export class AuthController {
   @ZodResponse({type: RegisterResDTO})
   register(@Body() body: RegisterBodyDTO) {
     return this.authService.register(body)
+  }
+
+  @Auth([AuthType.Bearer])
+  @Get('me')
+  @ZodResponse({type: GetMeResDTO})
+  getMe(@ActiveUser('userId') userId: number) {
+    return this.authService.getMe(userId)
   }
 }

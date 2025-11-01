@@ -8,7 +8,6 @@ config({
 })
 // Kiểm tra coi thử có file .env hay chưa
 if (!fs.existsSync(path.resolve('.env'))) {
-  console.log('Không tìm thấy file .env')
   process.exit(1)
 }
 
@@ -25,7 +24,6 @@ const configSchema = z.object({
 const configServer = configSchema.safeParse(process.env)
 
 if (!configServer.success) {
-  console.error(configServer.error)
   process.exit(1)
 }
 
