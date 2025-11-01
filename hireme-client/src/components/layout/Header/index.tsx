@@ -7,10 +7,17 @@ import { LoginModal } from "@/components/modals/LoginModal";
 import { RegisterModal } from "@/components/modals/RegisterModal";
 import { ForgotPasswordModal } from "@/components/modals/ForgotPasswordModal";
 
+import { useSessionCache } from "@/providers/SessionCacheProvider";
+
+import { useLogout } from "@/hooks/auth/logout/useLogout";
+
 export default function Header() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
+
+  const {data: session} = useSessionCache();
+  const {handleSignOut} = useLogout();
 
   return (
     <header className="bg-white text-black p-4 flex justify-between items-center shadow-md">
@@ -30,9 +37,9 @@ export default function Header() {
           </li>
           <li
             className="hover:cursor-pointer hover:text-blue-500"
-            onClick={() => setOpenLoginModal(true)}
+            onClick={() => session ? handleSignOut() : setOpenLoginModal(true)}
           >
-            Đăng nhập
+            {session ? 'Đăng xuất' : 'Đăng nhập'}
           </li>
         </ul>
       </nav>

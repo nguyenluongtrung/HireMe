@@ -40,7 +40,7 @@ export const options: NextAuthOptions = {
             throw new Error(loginData?.message);
           }
 
-          const token = loginData?.token;
+          const token = loginData?.accessToken;
           if (!token) {
             throw new Error('No token returned from login API');
           }
@@ -53,11 +53,10 @@ export const options: NextAuthOptions = {
           });
 
           const { data: userData } = meResponse;
-
           // 3. Return user data + token to NextAuth
           return {
             user: {
-              id: userData.data.id,
+              id: userData.id,
             },
             token,
           } as any;

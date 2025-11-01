@@ -5,6 +5,6 @@ export const apiEndpoints = {
     LOGIN: "/auth/login/",
   },
   SYSTEM: {
-    USER_PROFILE: "/user/profile",
+    USER_PROFILE: "/auth/me",
   },
 };
