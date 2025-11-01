@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from "@nestjs/common"
+import { Body, Controller, Get, HttpCode, Patch, Post } from "@nestjs/common"
 import { ZodResponse } from "nestjs-zod"
 
 import { Auth, IsPublic } from "src/shared/decorators/auth.decorator"
@@ -13,6 +13,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @HttpCode(200)
   @IsPublic()
   @ZodResponse({ type: LoginResDTO })
   login(@Body() body: LoginBodyDTO) {
