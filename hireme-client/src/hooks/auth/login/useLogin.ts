@@ -21,7 +21,6 @@ export const useLogin = ({ onSuccess }: { onSuccess: () => void }) => {
       email: "",
       password: "",
     },
-    mode: "onChange", // Enable real-time validation
   });
 
   const loginMutation = useMutation({

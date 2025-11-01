@@ -61,6 +61,7 @@ export const options: NextAuthOptions = {
             token,
           } as any;
         } catch (err: any) {
+          console.log(err)
           throw new Error(err.response?.data?.message);
         }
       },
