@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common"
 import { HashingService } from "src/shared/services/hashing.service"
 import { TokenService } from "src/shared/services/token.service"
 import { AccessTokenPayloadCreate } from "src/shared/types/jwt.type"
-import { InvalidPasswordException } from "src/shared/error"
+import { InvalidPasswordException, NotFoundRecordException } from "src/shared/error"
 import { SharedRoleRepository } from "src/shared/repositories/shared-role.repo"
 import { isUniqueConstraintPrismaError } from "src/shared/helpers"
 
@@ -29,7 +29,6 @@ export class AuthService {
     if (!user) {
       throw EmailNotFoundException
     }
-
     const isPasswordMatch = await this.hashingService.compare(body.password, user.password)
     if (!isPasswordMatch) {
       throw InvalidPasswordException
@@ -82,5 +81,18 @@ export class AuthService {
       expiresAt: new Date(decodedRefreshToken.exp * 1000),
     })
     return { accessToken, refreshToken }
+  }
+
+  async getMe(userId: number) {
+    const user = await this.authRepository.findUniqueUserIncludeRole(
+      {
+        id: userId,
+      },
+      true,
+    )
+    if (!user) {
+      throw NotFoundRecordException
+    }
+    return user
   }
 }

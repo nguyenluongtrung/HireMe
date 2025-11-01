@@ -20,7 +20,6 @@ export class RoleRepo {
   async list(pagination: GetRolesQueryType): Promise<GetRolesResType> {
     const skip = (Number(pagination.page) - 1) * Number(pagination.limit)
     const take = Number(pagination.limit)
-    console.log(skip, take)
     const [totalItems, data] = await Promise.all([
       this.prismaService.role.count({
         where: {

@@ -36,7 +36,12 @@ export const RegisterResSchema = UserSchema.omit({
   password: true,
 })
 
+export const GetMeResSchema = UserSchema.omit({
+  password: true,
+})
+
 export type RegisterBodyType = z.infer<typeof RegisterBodySchema>
 export type RegisterResType = z.infer<typeof RegisterResSchema>
 export type LoginBodyType = z.infer<typeof LoginBodySchema>
 export type LoginResType = z.infer<typeof LoginResSchema>
+export type GetMeResType = z.infer<typeof GetMeResSchema>

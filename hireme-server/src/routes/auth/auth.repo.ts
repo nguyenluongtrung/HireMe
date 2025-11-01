@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common"
 
+import { SerializeAll } from "src/shared/constants/serialize.decorator"
 import { RoleType } from "src/shared/models/shared-role.model"
 import { UserType } from "src/shared/models/shared-user.model"
 import { WhereUniqueUserType } from "src/shared/repositories/shared-user.repo"
 import { PrismaService } from "src/shared/services/prisma.service"
 
 @Injectable()
+@SerializeAll()
 export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
@@ -20,7 +22,7 @@ export class AuthRepository {
     }) as any
   }
 
-  findUniqueUserIncludeRole(where: WhereUniqueUserType): Promise<(UserType & { role: RoleType }) | null> {
+  findUniqueUserIncludeRole(where: WhereUniqueUserType, omitPassword: boolean = false): Promise<(UserType & { role: RoleType }) | null> {
     return this.prismaService.user.findFirst({
       where: {
         ...where,
@@ -28,6 +30,9 @@ export class AuthRepository {
       },
       include: {
         role: true,
+      },
+      omit: {
+        password: omitPassword,
       },
     }) as Promise<(UserType & { role: RoleType }) | null>
   }
