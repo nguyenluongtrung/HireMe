@@ -14,7 +14,7 @@ declare module "axios" {
 }
 
 const instance: AxiosInstance = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/system`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1`,
   timeout: 3600000, // Request timeout in milliseconds
 });
 
@@ -42,7 +42,6 @@ const getCachedSession = async () => {
 instance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const session = await getCachedSession();
-
     if ((session as Session)?.accessToken && !config.skipAuth) {
       config.headers.Authorization = `Bearer ${
         (session as Session).accessToken

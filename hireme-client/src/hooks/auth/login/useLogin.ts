@@ -1,44 +1,57 @@
-import { useContext } from 'react';
-import { signIn } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import { useContext } from "react";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 
-import { LoginCredentials } from '@/interfaces/auth';
+import { LoginCredentials } from "@/interfaces/auth";
 
-import { TOAST_LOGIN_ERROR_MESSAGE } from '@/contants/message';
+import {
+  TOAST_LOGIN_ERROR_MESSAGE,
+  TOAST_LOGIN_SUCCESS_MESSAGE,
+} from "@/contants/message";
 
-import { LoadingContext } from '@/providers/LoadingProvider';
+import { LoadingContext } from "@/providers/LoadingProvider";
+import { useToast } from "@/providers/ToastProvider";
 
 export const useLogin = ({ onSuccess }: { onSuccess: () => void }) => {
   const { setIsLoading } = useContext(LoadingContext);
+  const { showToast } = useToast();
   const form = useForm<LoginCredentials>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-    mode: 'onChange', // Enable real-time validation
+    mode: "onChange", // Enable real-time validation
   });
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginCredentials) => {
       setIsLoading(true);
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         ...data,
         redirect: false,
       });
       if (!result?.ok) {
-        form.setError('root', {
-          type: 'manual',
+        showToast({
+          description: TOAST_LOGIN_ERROR_MESSAGE,
+          variant: "error",
+        });
+        form.setError("root", {
+          type: "manual",
           message: result?.error || TOAST_LOGIN_ERROR_MESSAGE,
         });
         setIsLoading(false);
 
-        throw new Error(result?.error || '');
+        throw new Error(result?.error || "");
       }
 
       return result;
     },
     onSuccess: async () => {
+      showToast({
+        description: TOAST_LOGIN_SUCCESS_MESSAGE,
+        variant: "success",
+      });
       onSuccess();
     },
     onSettled: () => {
