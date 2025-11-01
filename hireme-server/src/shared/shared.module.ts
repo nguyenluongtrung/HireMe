@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 
-import { PrismaService } from './services/prisma.server'
+import { PrismaService } from './services/prisma.service'
 import { HashingService } from './services/hashing.service'
 import { TokenService } from './services/token.service'
 import { SharedUserRepository } from './repositories/shared-user.repo'

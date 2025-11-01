@@ -4,7 +4,7 @@ import { PermissionType } from 'src/shared/models/shared-permission.model'
 import { RoleType } from 'src/shared/models/shared-role.model'
 import { UserType } from 'src/shared/models/shared-user.model'
 
-import { PrismaService } from '../services/prisma.server'
+import { PrismaService } from '../services/prisma.service'
 
 type UserIncludeRolePermissionsType = UserType & { role: RoleType & { permissions: PermissionType[] } }
 
@@ -40,6 +40,6 @@ export class SharedUserRepository {
           },
         },
       },
-    })
+    }) as Promise<UserIncludeRolePermissionsType | null>
   }
 }
