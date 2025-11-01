@@ -3,13 +3,14 @@ import { Injectable } from "@nestjs/common"
 import { HashingService } from "src/shared/services/hashing.service"
 import { TokenService } from "src/shared/services/token.service"
 import { AccessTokenPayloadCreate } from "src/shared/types/jwt.type"
-import { InvalidPasswordException, NotFoundRecordException } from "src/shared/error"
+import { InvalidPasswordException, NotFoundRecordException, UserAlreadyExistsException } from "src/shared/error"
 import { SharedRoleRepository } from "src/shared/repositories/shared-role.repo"
-import { isUniqueConstraintPrismaError } from "src/shared/helpers"
+import { isNotFoundPrismaError, isUniqueConstraintPrismaError } from "src/shared/helpers"
 
 import { LoginBodyType, RegisterBodyType } from "./auth.model"
 import { AuthRepository } from "./auth.repo"
 import { EmailAlreadyExistsException, EmailNotFoundException } from "./auth.error"
+import { UpdateMeBodyDTO } from "./auth.dto"
 
 @Injectable()
 export class AuthService {
@@ -94,5 +95,24 @@ export class AuthService {
       throw NotFoundRecordException
     }
     return user
+  }
+
+  async updateMe(body: UpdateMeBodyDTO, userId: number) {
+    try {
+      const user = await this.authRepository.update(
+        {
+          id: userId,
+        },
+        body,
+      )
+      return user
+    } catch (error) {
+      if (isNotFoundPrismaError(error)) {
+        throw NotFoundRecordException
+      }
+      if (isUniqueConstraintPrismaError(error)) {
+        throw UserAlreadyExistsException
+      }
+    }
   }
 }
