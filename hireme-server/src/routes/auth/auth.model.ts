@@ -12,7 +12,7 @@ export const LoginResSchema = z.object({
   refreshToken: z.string(),
 })
 
-export const RegisterBodySchema = UserSchema.pick({ email: true, password: true, name: true, phoneNumber: true })
+export const RegisterBodySchema = UserSchema.pick({ email: true, password: true, name: true })
   .extend({ confirmPassword: z.string().min(6).max(100) })
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {
