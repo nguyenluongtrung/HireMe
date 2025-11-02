@@ -12,7 +12,7 @@ export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   createUser(
-    user: Pick<UserType, 'email' | 'name' | 'password' | 'phoneNumber' | 'roleId'>,
+    user: Pick<UserType, 'email' | 'name' | 'password' | 'roleId'>,
   ): Promise<Omit<UserType, 'password'>> {
     return this.prismaService.user.create({
       data: user,

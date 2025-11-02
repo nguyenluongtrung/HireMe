@@ -36,7 +36,7 @@ export class AuthController {
 
   @Patch('me')
   @Auth([AuthType.Bearer])
-  @ZodResponse({type: UpdateMeResDTO})
+  // @ZodResponse({type: UpdateMeResDTO})
   updateMe(@ActiveUser('userId') userId: number, @Body() body: UpdateMeBodyDTO) {
     return this.authService.updateMe(body, userId)
   }

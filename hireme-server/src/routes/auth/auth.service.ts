@@ -51,7 +51,6 @@ export class AuthService {
       const user = await this.authRepository.createUser({
         email: body.email,
         name: body.name,
-        phoneNumber: body.phoneNumber,
         password: hashedPassword,
         roleId: clientRoleId,
       })
