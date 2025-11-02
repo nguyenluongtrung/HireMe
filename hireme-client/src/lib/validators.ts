@@ -27,3 +27,12 @@ export const EMAIL_VALIDATION = {
     message: "Email không được vượt quá 255 ký tự",
   },
 };
+
+export const REGISTER_VALIDATE_MESSAGE = {
+  name: {
+    required: "Tên là bắt buộc",
+  },
+  phoneNumber: {
+    required: "Số điện thoại là bắt buộc",
+  },
+} as const;

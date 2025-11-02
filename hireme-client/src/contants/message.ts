@@ -4,3 +4,6 @@ export const ERROR_TITLE_MESSAGE = 'Lỗi';
 
 export const TOAST_LOGIN_SUCCESS_MESSAGE = "Đăng nhập thành công";
 export const TOAST_LOGIN_ERROR_MESSAGE = "Đăng nhập thất bại";
+
+export const TOAST_REGISTER_SUCCESS_MESSAGE = "Đăng ký thành công";
+export const TOAST_REGISTER_ERROR_MESSAGE = "Đăng ký thất bại";

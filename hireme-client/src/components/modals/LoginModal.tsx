@@ -11,7 +11,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 
 import { useLogin } from "@/hooks/auth/login/useLogin";
 
@@ -30,20 +37,23 @@ export function LoginModal({
   onRegister,
   onForgotPassword,
 }: LoginModalProps) {
-  const { form, control, isSubmitting, handleSubmit, onSubmit, errors } = useLogin({
-    onSuccess: () => {
-      onClose();
-    }
-  });
+  const { form, control, isSubmitting, handleSubmit, onSubmit, errors } =
+    useLogin({
+      onSuccess: () => {
+        onClose();
+      },
+    });
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white">
+      <DialogContent
+        className="sm:max-w-md bg-white"
+      >
         <Form {...form}>
           <form
             noValidate
             onSubmit={handleSubmit(onSubmit)}
-            className='space-y-4'
+            className="space-y-4"
           >
             <DialogHeader className="!text-center">
               <DialogTitle className="text-primary">Đăng nhập</DialogTitle>
@@ -66,12 +76,15 @@ export function LoginModal({
                       <Input
                         id="email"
                         placeholder="Nhập email của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${errors.email && 'border-error focus:border-error focus:ring-error'}`}
+                        className={`w-full focus:border-primary focus:ring-primary ${
+                          errors.email &&
+                          "border-error focus:border-error focus:ring-error"
+                        }`}
                         type="email"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-error"/>
+                    <FormMessage className="text-error" />
                   </FormItem>
                 )}
               />
@@ -86,12 +99,15 @@ export function LoginModal({
                       <Input
                         id="password"
                         placeholder="Nhập mật khẩu của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${errors.password && 'border-error focus:border-error focus:ring-error'}`}
+                        className={`w-full focus:border-primary focus:ring-primary ${
+                          errors.password &&
+                          "border-error focus:border-error focus:ring-error"
+                        }`}
                         type="password"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-error"/>
+                    <FormMessage className="text-error" />
                   </FormItem>
                 )}
               />
