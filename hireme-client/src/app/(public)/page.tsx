@@ -22,7 +22,9 @@ export default function Home() {
       <section className="text-center mt-10">
         <h1 className="font-bold">
           HireMe -{" "}
-          <span className="text-primary">Ứng dụng AI để nâng tầm CV của bạn</span>
+          <span className="text-primary">
+            Ứng dụng AI để nâng tầm CV của bạn
+          </span>
         </h1>
         <p className="text-lg mt-4 text-gray-700">
           <span className="text-secondary bg-blue-100 p-1 rounded-md line-through">
