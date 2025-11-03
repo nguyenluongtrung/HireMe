@@ -1,7 +1,7 @@
 import { apiEndpoints } from '@/contants/routers';
 
 import { LoginCredentials } from '@/interfaces/auth';
-import { RegisterFormData } from '@/interfaces/user';
+import { RegisterFormData, User } from '@/interfaces/user';
 
 import api from '@/base/api';
 
@@ -11,4 +11,17 @@ export const login = (data: LoginCredentials) => {
 
 export const registerUser = (data: RegisterFormData) => {
   return api.post(apiEndpoints.AUTH.REGISTER, data);
+};
+
+export const getUserProfile = (signal?: AbortSignal) => {
+  return api.get(apiEndpoints.SYSTEM.USER_PROFILE, {
+    signal,
+  });
+};
+
+export const updateUserProfile = (data: Partial<User>) => {
+  return api.post<User>(
+    apiEndpoints.SYSTEM.USER_PROFILE,
+    data
+  );
 };
