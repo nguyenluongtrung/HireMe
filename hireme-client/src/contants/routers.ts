@@ -1,4 +1,17 @@
-export const pageRouters = {};
+export const pageRouters = {
+  HOME: {
+    name: "Trang chủ",
+    href: "/",
+  },
+  CV_IMPROVEMENT: {
+    name: "Nâng cấp CV",
+    href: "/cv-improvement",
+  },
+  INTERVIEW_PRACTICE: {
+    name: "Luyện phỏng vấn",
+    href: "/interview-practice",
+  },
+};
 
 export const apiEndpoints = {
   AUTH: {

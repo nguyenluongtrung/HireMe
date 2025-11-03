@@ -2,8 +2,6 @@ import { GiArchiveRegister } from "react-icons/gi";
 import {
   MdOutlineRecommend,
   MdOutlineUploadFile,
-  MdSpatialTracking,
-  MdTipsAndUpdates,
 } from "react-icons/md";
 import { TbAnalyze, TbFileCheck } from "react-icons/tb";
 

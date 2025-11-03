@@ -57,11 +57,11 @@ export const options: NextAuthOptions = {
           return {
             user: {
               id: userData.id,
+              name: userData.name
             },
             token,
           } as any;
         } catch (err: any) {
-          console.log(err)
           throw new Error(err.response?.data?.message);
         }
       },
