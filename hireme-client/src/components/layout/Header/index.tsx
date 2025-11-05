@@ -14,21 +14,28 @@ import { LoginModal } from "@/components/modals/LoginModal";
 import { RegisterModal } from "@/components/modals/RegisterModal";
 import { ForgotPasswordModal } from "@/components/modals/ForgotPasswordModal";
 import { Button } from "@/components/ui/button";
+import { ViewProfileModal } from "@/components/modals/ViewProfileModal";
 
 import { useSessionCache } from "@/providers/SessionCacheProvider";
 import { GlobalStateContext } from "@/providers/GlobalStateProvider";
 
 import { useLogout } from "@/hooks/auth/logout/useLogout";
+import useUserProfile from "@/hooks/auth/me/useUserProfile";
 
 export default function Header() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
+  const [openViewProfileModal, setOpenViewProfileModal] = useState(false);
 
   const { data: session } = useSessionCache();
   const { openHamburgerMenu, setOpenHamburgerMenu } =
     useContext(GlobalStateContext);
   const { handleSignOut } = useLogout();
+
+  const { profile } = useUserProfile({
+    enabled: !!session && openViewProfileModal,
+  });
 
   return (
     <header className="bg-white text-black p-4 flex justify-between items-center shadow-md">
@@ -48,7 +55,7 @@ export default function Header() {
         <span className="text-primary">Hire</span>Me
       </h5>
       <nav className="hidden md:block">
-        <ul className="flex space-x-4">
+        <ul className="flex space-x-4 items-center">
           <Link href="/">
             <li className="hover:cursor-pointer hover:text-blue-500">
               Trang chủ
@@ -60,13 +67,58 @@ export default function Header() {
           <li className="hover:cursor-pointer hover:text-blue-500">
             Luyện phỏng vấn
           </li>
-          <li
-            className="hover:cursor-pointer hover:text-blue-500"
-            onClick={() =>
-              session ? handleSignOut() : setOpenLoginModal(true)
-            }
-          >
-            {session ? "Đăng xuất" : "Đăng nhập"}
+          <li className="hover:cursor-pointer hover:text-blue-500">
+            {session ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  {/* the trigger (your icon) */}
+                  <button className="focus:outline-none hover:cursor-pointer">
+                    <Avatar className="w-8 h-8">
+                      {/* AvatarImage: user's profile picture if available */}
+                      <AvatarImage
+                        src="/images/user-avatar.jpg"
+                        alt="User avatar"
+                      />
+                      {/* AvatarFallback: shown if no image */}
+                      <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
+                        {session.user.name
+                          ? session.user.name.charAt(0).toUpperCase()
+                          : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </PopoverTrigger>
+
+                <PopoverContent
+                  align="end"
+                  className="w-36 !p-1 bg-white border-gray-100 !shadow-lg hover:cursor-pointer"
+                >
+                  <div className="flex flex-col space-y-1">
+                    <Button
+                      variant="ghost"
+                      className="justify-start w-full font-normal hover:cursor-pointer hover:bg-gray-200"
+                      onClick={() => setOpenViewProfileModal(true)}
+                    >
+                      Hồ sơ của tôi
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="justify-start w-full font-normal hover:cursor-pointer hover:bg-gray-200"
+                      onClick={() => handleSignOut()}
+                    >
+                      Đăng xuất
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <p
+                className="hover:cursor-pointer hover:text-blue-500"
+                onClick={() => setOpenLoginModal(true)}
+              >
+                Đăng nhập
+              </p>
+            )}
           </li>
         </ul>
       </nav>
@@ -100,6 +152,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   className="justify-start w-full font-normal hover:cursor-pointer hover:bg-gray-200"
+                  onClick={() => setOpenViewProfileModal(true)}
                 >
                   Hồ sơ của tôi
                 </Button>
@@ -122,6 +175,14 @@ export default function Header() {
           </p>
         )}
       </div>
+
+      {openViewProfileModal && profile && Object.keys(profile).length && (
+        <ViewProfileModal
+          open={openViewProfileModal}
+          onClose={() => setOpenViewProfileModal(false)}
+          profile={profile}
+        />
+      )}
 
       {openLoginModal && (
         <LoginModal

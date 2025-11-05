@@ -1,6 +1,9 @@
 export interface User {
-  id: string;
+  id?: string;
   name: string;
+  phoneNumber: string;
+  email: string;
+  avatarUrl?: string;
 }
 
 export interface RegisterFormData {
