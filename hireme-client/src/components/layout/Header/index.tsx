@@ -15,6 +15,7 @@ import { RegisterModal } from "@/components/modals/RegisterModal";
 import { ForgotPasswordModal } from "@/components/modals/ForgotPasswordModal";
 import { Button } from "@/components/ui/button";
 import { ViewProfileModal } from "@/components/modals/ViewProfileModal";
+import { EditProfileModal } from "@/components/modals/EditProfileModal";
 
 import { useSessionCache } from "@/providers/SessionCacheProvider";
 import { GlobalStateContext } from "@/providers/GlobalStateProvider";
@@ -27,6 +28,7 @@ export default function Header() {
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
   const [openViewProfileModal, setOpenViewProfileModal] = useState(false);
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false);
 
   const { data: session } = useSessionCache();
   const { openHamburgerMenu, setOpenHamburgerMenu } =
@@ -180,6 +182,20 @@ export default function Header() {
         <ViewProfileModal
           open={openViewProfileModal}
           onClose={() => setOpenViewProfileModal(false)}
+          onOpenEditModal={() => {
+            setOpenViewProfileModal(false);
+            setOpenEditProfileModal(true);
+          }}
+          profile={profile}
+        />
+      )}
+
+      {openEditProfileModal && profile && Object.keys(profile).length && (
+        <EditProfileModal
+          open={openEditProfileModal}
+          onClose={() => {
+            setOpenEditProfileModal(false);
+          }}
           profile={profile}
         />
       )}

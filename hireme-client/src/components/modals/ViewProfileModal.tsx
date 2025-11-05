@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 interface ViewProfileModalProps {
   open: boolean;
   onClose: () => void;
+  onOpenEditModal: () => void;
   profile: {
     name: string;
     email: string;
@@ -26,6 +27,7 @@ interface ViewProfileModalProps {
 export const ViewProfileModal: React.FC<ViewProfileModalProps> = ({
   open,
   onClose,
+  onOpenEditModal,
   profile,
 }) => {
   return (
@@ -64,7 +66,7 @@ export const ViewProfileModal: React.FC<ViewProfileModalProps> = ({
           </div>
         </div>
 
-        <Button onClick={onClose} className="w-[100px] text-white mx-auto">
+        <Button onClick={onOpenEditModal} className="w-[100px] text-white mx-auto">
           Chỉnh sửa
         </Button>
       </DialogContent>
