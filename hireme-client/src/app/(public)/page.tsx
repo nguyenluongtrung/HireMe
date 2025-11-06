@@ -40,7 +40,7 @@ export default function Home() {
           >
             Bắt đầu trải nghiệm
           </Button>
-          <Button className="bg-gray-100 hover:cursor-pointer hover:bg-gray-200">
+          <Button variant={'gray'}>
             Tìm hiểu thêm
           </Button>
         </div>

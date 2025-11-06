@@ -47,3 +47,12 @@ export const STEP_COLOR_PAIRS = [
 ];
 
 export const TOAST_DURATION = 3000;
+
+export const MAX_AVATAR_IMAGE_FILE_SIZE = 30 * 1024 * 1024;
+
+export const ALLOWED_IMAGE_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/jpg',
+];
