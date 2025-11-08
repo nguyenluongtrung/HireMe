@@ -57,7 +57,8 @@ export const options: NextAuthOptions = {
           return {
             user: {
               id: userData.id,
-              name: userData.name
+              name: userData.name,
+              avatarUrl: userData.avatarUrl,
             },
             token,
           } as any;

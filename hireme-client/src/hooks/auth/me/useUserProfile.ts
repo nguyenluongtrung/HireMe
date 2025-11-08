@@ -35,6 +35,7 @@ const useUserProfile = ({
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const { setIsLoading } = useContext(LoadingContext);
+  const { update } = useSessionCache();
   const token = session?.accessToken;
 
   const form = useForm<EditInfoFormData>();
@@ -111,6 +112,19 @@ const useUserProfile = ({
 
       // 3. Call backend API to update profile
       await updateUserProfile(payload);
+      if (data.avatar) {
+        const response = await fetch("/api/update-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ avatarUrl }),
+        });
+        if (response.ok) {
+          const updatedSession = await response.json();
+          if (updatedSession.session) {
+            await Promise.all([update(updatedSession.session)]);
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-profile"] });

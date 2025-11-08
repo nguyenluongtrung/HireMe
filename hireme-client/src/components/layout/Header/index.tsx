@@ -78,7 +78,8 @@ export default function Header() {
                     <Avatar className="w-8 h-8">
                       {/* AvatarImage: user's profile picture if available */}
                       <AvatarImage
-                        src="/images/user-avatar.jpg"
+                        className="object-cover"
+                        src={session.user?.avatarUrl}
                         alt="User avatar"
                       />
                       {/* AvatarFallback: shown if no image */}
@@ -134,7 +135,7 @@ export default function Header() {
                   {/* AvatarImage: user's profile picture if available */}
                   <AvatarImage
                     className="object-cover"
-                    src={profile?.avatarUrl || "/images/user-avatar.jpg"}
+                    src={session.user?.avatarUrl}
                     alt="User avatar"
                   />
                   {/* AvatarFallback: shown if no image */}
