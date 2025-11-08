@@ -25,7 +25,7 @@ export const UpdateMeBodySchema = UserSchema.pick({
   password: true,
   name: true,
   phoneNumber: true,
-  avatar: true,
+  avatarUrl: true,
 })
   .extend({ confirmPassword: z.string().min(6).max(100) })
   .strict()
