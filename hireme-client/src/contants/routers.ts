@@ -20,5 +20,6 @@ export const apiEndpoints = {
   },
   SYSTEM: {
     USER_PROFILE: "/auth/me",
+    PRESIGNED_URL: "/media/images/upload/presigned-url",
   },
 };

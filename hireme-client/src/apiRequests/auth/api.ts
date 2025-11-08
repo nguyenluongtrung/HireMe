@@ -1,7 +1,7 @@
 import { apiEndpoints } from '@/contants/routers';
 
 import { LoginCredentials } from '@/interfaces/auth';
-import { RegisterFormData } from '@/interfaces/user';
+import { EditInfoFormData, RegisterFormData } from '@/interfaces/user';
 
 import api from '@/base/api';
 
@@ -19,8 +19,8 @@ export const getUserProfile = (signal?: AbortSignal) => {
   });
 };
 
-export const updateUserProfile = (data: FormData) => {
-  return api.patch<FormData>(
+export const updateUserProfile = (data: Partial<EditInfoFormData>) => {
+  return api.patch<Partial<EditInfoFormData>>(
     apiEndpoints.SYSTEM.USER_PROFILE,
     data
   );

@@ -16,7 +16,7 @@ export interface RegisterFormData {
 export interface EditInfoFormData {
   name: string;
   email: string;
-  password: string;
   phoneNumber: string;
-  avatar?: File | null;
+  avatar: File | null;
+  avatarUrl: string;
 }
