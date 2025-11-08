@@ -130,10 +130,11 @@ export default function Header() {
             <PopoverTrigger asChild>
               {/* the trigger (your icon) */}
               <button className="md:hidden focus:outline-none hover:cursor-pointer">
-                <Avatar className="w-8 h-8">
+                <Avatar className="w-8 h-8 object-cover">
                   {/* AvatarImage: user's profile picture if available */}
                   <AvatarImage
-                    src="/images/user-avatar.jpg"
+                    className="object-cover"
+                    src={profile?.avatarUrl || "/images/user-avatar.jpg"}
                     alt="User avatar"
                   />
                   {/* AvatarFallback: shown if no image */}

@@ -17,6 +17,7 @@ import { EditInfoFormData, User } from "@/interfaces/user";
 import { useSessionCache } from "@/providers/SessionCacheProvider";
 import { useToast } from "@/providers/ToastProvider";
 import { LoadingContext } from "@/providers/LoadingProvider";
+
 import { getPresignedUrl, uploadFileToS3 } from "@/apiRequests/media/api";
 
 interface UseUserProfileProps {
@@ -45,7 +46,7 @@ const useUserProfile = ({
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-      avatarUrl: data.avatar,
+      avatarUrl: data.avatarUrl,
       id: data.id,
     };
   };
@@ -87,17 +88,17 @@ const useUserProfile = ({
           filename: data.avatar.name,
           filesize: data.avatar.size,
         });
-        const { uploadUrl, fileUrl } = presignedData;
+        const { presignedUrl, url } = presignedData;
 
         // Upload directly to S3
         await uploadFileToS3({
-          uploadUrl,
+          uploadUrl: presignedUrl,
           file: data.avatar,
           fileType: data.avatar.type,
         });
 
         // Store the final URL for backend
-        avatarUrl = fileUrl;
+        avatarUrl = url;
       }
 
       // 2️. Prepare payload for backend update
@@ -105,7 +106,7 @@ const useUserProfile = ({
         name: data.name,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        ...(avatarUrl && { avatarUrl }),
+        ...(avatarUrl && { avatarUrl: avatarUrl }),
       };
 
       // 3. Call backend API to update profile

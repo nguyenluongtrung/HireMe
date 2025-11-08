@@ -116,6 +116,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                     }}
                   />
                   <AvatarImage
+                    className="object-cover"
                     src={previewAvatarUrl || profile?.avatarUrl}
                     alt={profile.name}
                   />

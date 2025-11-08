@@ -41,7 +41,11 @@ export const ViewProfileModal: React.FC<ViewProfileModalProps> = ({
 
         <div className="flex items-center gap-5">
           <Avatar className="h-20 w-20">
-            <AvatarImage src={profile?.avatarUrl} alt={profile.name} />
+            <AvatarImage
+              src={profile?.avatarUrl}
+              alt={profile.name}
+              className="object-cover"
+            />
             <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
               {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
             </AvatarFallback>
@@ -66,7 +70,10 @@ export const ViewProfileModal: React.FC<ViewProfileModalProps> = ({
           </div>
         </div>
 
-        <Button onClick={onOpenEditModal} className="w-[100px] text-white mx-auto">
+        <Button
+          onClick={onOpenEditModal}
+          className="w-[100px] text-white mx-auto"
+        >
           Chỉnh sửa
         </Button>
       </DialogContent>
