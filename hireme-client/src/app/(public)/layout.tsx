@@ -24,7 +24,7 @@ export default function Layout({
         </div>
       )}
       <main
-        className={`flex-grow flex flex-col gap-10 bg-white overflow-y-auto no-scrollbar lg:custom-scrollbar ${
+        className={`p-4 flex-grow flex flex-col gap-10 bg-white overflow-y-auto no-scrollbar lg:custom-scrollbar ${
           openHamburgerMenu ? "hidden md:block" : ""
         }`}
       >
