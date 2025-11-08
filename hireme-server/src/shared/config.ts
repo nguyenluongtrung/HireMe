@@ -19,6 +19,10 @@ const configSchema = z.object({
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
   APP_NAME: z.string(),
   PREFIX_STATIC_ENPOINT: z.string(),
+  S3_REGION: z.string(),
+  S3_ACCESS_KEY: z.string(),
+  S3_SECRET_KEY: z.string(),
+  S3_BUCKET_NAME: z.string(),
 })
 
 const configServer = configSchema.safeParse(process.env)

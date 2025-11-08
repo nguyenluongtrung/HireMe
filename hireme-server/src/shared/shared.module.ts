@@ -8,6 +8,7 @@ import { SharedUserRepository } from './repositories/shared-user.repo'
 import { AccessTokenGuard } from './guards/access-token.guard'
 import { APP_GUARD } from '@nestjs/core'
 import { AuthenticationGuard } from './guards/authentication.guard'
+import { S3Service } from './services/s3.service'
 
 
 const sharedServices = [
@@ -15,6 +16,7 @@ const sharedServices = [
   HashingService,
   TokenService,
   SharedUserRepository,
+  S3Service
 ]
 
 @Global()
