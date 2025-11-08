@@ -21,6 +21,7 @@ import {
 import { Input } from "../ui/input";
 
 import useUserProfile from "@/hooks/auth/me/useUserProfile";
+
 import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_IMAGE_FILE_SIZE } from "@/contants";
 
 interface EditProfileModalProps {

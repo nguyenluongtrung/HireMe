@@ -17,6 +17,7 @@ import { EditInfoFormData, User } from "@/interfaces/user";
 import { useSessionCache } from "@/providers/SessionCacheProvider";
 import { useToast } from "@/providers/ToastProvider";
 import { LoadingContext } from "@/providers/LoadingProvider";
+import { getPresignedUrl, uploadFileToS3 } from "@/apiRequests/media/api";
 
 interface UseUserProfileProps {
   onSuccess?: (profile: User) => void;
@@ -76,21 +77,39 @@ const useUserProfile = ({
   const updateProfileMutation = useMutation({
     mutationFn: async (data: Partial<EditInfoFormData>) => {
       setIsLoading(true);
-      const formData = new FormData();
 
-      Object.entries(data).forEach(([key, value]) => {
-        // Skip undefined or null values
-        if (value === undefined || value === null) return;
+      let avatarUrl: string | undefined;
 
-        // If avatar is a File object, append it directly
-        if (key === "avatar" && value instanceof File) {
-          formData.append("avatar", value);
-        } else {
-          formData.append(key, value as string);
-        }
-      });
+      // 1. Upload avatar to S3 if a new file is selected
+      if (data.avatar instanceof File) {
+        // Get presigned URL from backend
+        const { data: presignedData } = await getPresignedUrl({
+          filename: data.avatar.name,
+          filesize: data.avatar.size,
+        });
+        const { uploadUrl, fileUrl } = presignedData;
 
-      await updateUserProfile(formData);
+        // Upload directly to S3
+        await uploadFileToS3({
+          uploadUrl,
+          file: data.avatar,
+          fileType: data.avatar.type,
+        });
+
+        // Store the final URL for backend
+        avatarUrl = fileUrl;
+      }
+
+      // 2️. Prepare payload for backend update
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        ...(avatarUrl && { avatarUrl }),
+      };
+
+      // 3. Call backend API to update profile
+      await updateUserProfile(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-profile"] });
@@ -124,7 +143,7 @@ const useUserProfile = ({
     },
   });
 
-  const onSubmit = (data: EditInfoFormData) => {
+  const onSubmit = (data: Partial<EditInfoFormData>) => {
     updateProfileMutation.mutate(data);
   };
 
