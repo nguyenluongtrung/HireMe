@@ -20,6 +20,8 @@ import { EditProfileModal } from "@/components/modals/EditProfileModal";
 import { useSessionCache } from "@/providers/SessionCacheProvider";
 import { GlobalStateContext } from "@/providers/GlobalStateProvider";
 
+import { pageRouters } from "@/contants/routers";
+
 import { useLogout } from "@/hooks/auth/logout/useLogout";
 import useUserProfile from "@/hooks/auth/me/useUserProfile";
 
@@ -34,6 +36,8 @@ export default function Header() {
   const { openHamburgerMenu, setOpenHamburgerMenu } =
     useContext(GlobalStateContext);
   const { handleSignOut } = useLogout();
+
+  const menuItems = Object.values(pageRouters);
 
   const { profile } = useUserProfile({
     enabled: !!session && openViewProfileModal,
@@ -58,18 +62,14 @@ export default function Header() {
       </h5>
       <nav className="hidden md:block">
         <ul className="flex space-x-4 items-center">
-          <Link href="/">
-            <li className="hover:cursor-pointer hover:text-blue-500">
-              Trang chủ
-            </li>
-          </Link>
-          <li className="hover:cursor-pointer hover:text-blue-500">
-            Nâng cấp CV
-          </li>
-          <li className="hover:cursor-pointer hover:text-blue-500">
-            Luyện phỏng vấn
-          </li>
-          <li className="hover:cursor-pointer hover:text-blue-500">
+          {menuItems.map((item) => (
+            <Link key={item.href} href={item.href}>
+              <li className="hover:cursor-pointer hover:text-blue-500">
+                {item.name}
+              </li>
+            </Link>
+          ))}
+          <li className="hover:cursor-pointer hover:text-blue-500 h-8">
             {session ? (
               <Popover>
                 <PopoverTrigger asChild>

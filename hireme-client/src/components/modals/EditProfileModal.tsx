@@ -22,7 +22,7 @@ import { Input } from "../ui/input";
 
 import useUserProfile from "@/hooks/auth/me/useUserProfile";
 
-import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_IMAGE_FILE_SIZE } from "@/contants";
+import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/contants";
 
 interface EditProfileModalProps {
   open: boolean;
@@ -68,8 +68,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       return;
     }
 
-    if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE) {
-      setUploadFileError("Kích thước file quá 30MB.");
+    if (file.size > MAX_FILE_SIZE) {
+      setUploadFileError("Kích thước file quá 10MB.");
       return;
     }
 

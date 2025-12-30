@@ -11,6 +11,10 @@ export const pageRouters = {
     name: "Luyện phỏng vấn",
     href: "/interview-practice",
   },
+  CV_HISTORY: {
+    name: "CV của tôi",
+    href: "/cv-history",
+  },
 };
 
 export const apiEndpoints = {
