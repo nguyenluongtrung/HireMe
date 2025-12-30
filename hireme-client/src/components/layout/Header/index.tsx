@@ -69,7 +69,7 @@ export default function Header() {
               </li>
             </Link>
           ))}
-          <li className="hover:cursor-pointer hover:text-blue-500 h-8">
+          <li className="hover:cursor-pointer hover:text-blue-500">
             {session ? (
               <Popover>
                 <PopoverTrigger asChild>
