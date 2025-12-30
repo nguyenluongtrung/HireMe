@@ -56,9 +56,8 @@ export default function Home() {
             <JobSeekingStep
               key={index}
               index={index}
-              icon={step.icon}
-              title={step.title}
-              description={step.description}
+              step={step}
+              onOpenLoginModal={() => setOpenLoginModal(true)}
             />
           ))}
         </div>
