@@ -2,7 +2,8 @@
 
 import { useContext } from "react";
 
-import Footer from "@/components/layout/Footer";
+import { cn } from "@/lib/utils";
+
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 
@@ -13,24 +14,33 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { openHamburgerMenu } = useContext(GlobalStateContext);
+  const { openHamburgerMenu, isSidebarCollapsed } = useContext(GlobalStateContext);
 
   return (
-    <div className="flex min-h-screen w-full flex-col relative">
-      <Header />
-      {openHamburgerMenu && (
-        <div className="h-[calc(100vh_-_180px)] flex-grow bg-white overflow-y-auto no-scrollbar md:hidden">
-          <Sidebar className="!no-scrollbar" />
-        </div>
-      )}
-      <main
-        className={`p-4 flex-grow flex flex-col gap-10 bg-white overflow-y-auto no-scrollbar lg:custom-scrollbar ${
-          openHamburgerMenu ? "hidden md:block" : ""
-        }`}
-      >
-        {children}
-      </main>
-      <Footer />
+    <div className="flex h-screen w-full bg-[#f8fafc]">
+      {/* Desktop Sidebar */}
+      <div className={cn(
+        "hidden md:block h-full shrink-0 transition-all duration-300 ease-in-out",
+        isSidebarCollapsed ? "w-[80px]" : "w-72"
+      )}>
+        <Sidebar />
+      </div>
+
+      <div className="flex flex-1 flex-col h-full overflow-hidden">
+        {/* Mobile Menu Content (replaces main when open) */}
+        {openHamburgerMenu && (
+          <div className="flex-1 bg-white overflow-y-auto no-scrollbar md:hidden">
+            <Sidebar className="!w-full !rounded-none" />
+          </div>
+        )}
+
+        <main
+          className={`flex-1 overflow-y-auto no-scrollbar lg:custom-scrollbar ${openHamburgerMenu ? "hidden md:block" : ""
+            }`}
+        >
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
