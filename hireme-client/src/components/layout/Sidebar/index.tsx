@@ -54,7 +54,7 @@ const Sidebar = ({ className }: Props) => {
       <div className={cn("flex h-16 items-center", isSidebarCollapsed ? "justify-center px-0" : "px-6")}>
         <div className="flex items-center gap-2 font-bold text-xl text-white">
           <Bot className="h-8 w-8 text-blue-500" />
-          {!isSidebarCollapsed && <span>CV Builder AI</span>}
+          {!isSidebarCollapsed && <span>Hire Me</span>}
         </div>
       </div>
 

@@ -1,48 +1,34 @@
-import { GiArchiveRegister } from "react-icons/gi";
-import { MdOutlineRecommend, MdOutlineUploadFile } from "react-icons/md";
-import { TbAnalyze, TbFileCheck } from "react-icons/tb";
+import { Download, FileSignature, Upload, Wand2 } from "lucide-react";
 
 export const JOB_SEEKING_STEPS = [
   {
-    icon: GiArchiveRegister,
-    title: "Đăng ký & tạo tài khoản",
-    authRequired: false,
-    href: "",
-    description:
-      "Người dùng đăng ký nhanh bằng email để bắt đầu quá trình cải thiện CV.",
-  },
-  {
-    icon: MdOutlineUploadFile,
-    title: "Tải CV lên hệ thống",
-    authRequired: false,
-    href: "/cv-improvement",
-    description:
-      "Chỉ cần tải lên file CV hiện tại (PDF, DOCX), hệ thống sẽ tự động đọc và xử lý nội dung.",
-  },
-  {
-    icon: TbAnalyze,
-    title: "Phân tích & tối ưu CV bằng AI",
-    authRequired: true,
-    href: "/cv-improvement",
-    description:
-      "Hệ thống AI tự động phân tích CV hiện có, gợi ý chỉnh sửa, bổ sung điểm mạnh và định dạng lại để CV trở nên ấn tượng và chuyên nghiệp hơn.",
-  },
-  {
-    icon: MdOutlineRecommend,
-    title: "Gợi ý cải thiện chi tiết",
-    authRequired: true,
-    href: "/cv-improvement",
-    description:
-      "AI đề xuất chỉnh sửa câu từ, bổ sung kỹ năng, cải thiện định dạng và tăng khả năng gây ấn tượng với nhà tuyển dụng.",
-  },
-  {
-    icon: TbFileCheck,
-    title: "Xem & tải CV đã tối ưu",
-    authRequired: true,
-    href: "/cv-history",
-    description:
-      "Người dùng xem bản CV được cải thiện, tùy chỉnh thêm nếu cần và tải xuống phiên bản hoàn thiện.",
-  },
+      icon: FileSignature,
+      title: "Đăng ký & tạo tài khoản",
+      desc: "Người dùng đăng ký nhanh bằng email để bắt đầu quá trình cải thiện CV.",
+      iconColor: "text-purple-400",
+      bgFrom: "from-purple-500/10",
+    },
+    {
+      icon: Upload,
+      title: "Tải CV lên hệ thống",
+      desc: "Chỉ cần tải lên file CV hiện tại (PDF, DOCX), hệ thống sẽ tự động đọc.",
+      iconColor: "text-pink-400",
+      bgFrom: "from-pink-500/10",
+    },
+    {
+      icon: Wand2,
+      title: "Phân tích & tối ưu AI",
+      desc: "Hệ thống AI tự động phân tích CV, gợi ý chỉnh sửa và bổ sung điểm mạnh.",
+      iconColor: "text-emerald-400",
+      bgFrom: "from-emerald-500/10",
+    },
+    {
+      icon: Download,
+      title: "Xem & tải CV đã tối ưu",
+      desc: "Xem bản CV được cải thiện, tùy chỉnh thêm và tải xuống phiên bản hoàn thiện.",
+      iconColor: "text-blue-400",
+      bgFrom: "from-blue-500/10",
+    },
 ];
 
 export const STEP_COLOR_PAIRS = [
