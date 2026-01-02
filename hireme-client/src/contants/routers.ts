@@ -1,3 +1,11 @@
+import {
+  LayoutDashboard,
+  FileText,
+  Briefcase,
+  Settings,
+  Bot
+} from "lucide-react";
+
 export const pageRouters = {
   HOME: {
     name: "Trang chủ",
@@ -16,6 +24,39 @@ export const pageRouters = {
     href: "/cv-history",
   },
 };
+
+export const MAIN_MENU = [
+  {
+    name: "Trang chủ",
+    href: "/",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Cải thiện CV",
+    href: "/cv-improvement",
+    icon: FileText,
+  },
+  {
+    name: "CV của tôi",
+    href: "/cv-history",
+    icon: FileText,
+  },
+  {
+    name: "Theo dõi việc làm",
+    href: "/job-tracker",
+    icon: Briefcase,
+  },
+  {
+    name: "Phân tích AI",
+    href: "/ai-analysis",
+    icon: Bot,
+  },
+  {
+    name: "Cài đặt",
+    href: "/settings",
+    icon: Settings,
+  },
+];
 
 export const apiEndpoints = {
   AUTH: {

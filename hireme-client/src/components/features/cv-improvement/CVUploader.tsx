@@ -1,6 +1,6 @@
 "use client";
 
-import { Upload, X, FileText, CloudUpload, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, X, FileText, CloudUpload, CheckCircle, AlertCircle, MoreVertical } from "lucide-react";
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { renderAsync } from "docx-preview";
 
@@ -96,7 +96,7 @@ export const CVUploader = () => {
     if (
       selectedFile.type === "application/msword" ||
       selectedFile.type ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       return (
         <div
@@ -129,108 +129,56 @@ export const CVUploader = () => {
   }, [selectedFile]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-4">
-      {!previewUrl ? (
-        <div
-          className={`
-            relative w-full h-full rounded-xl border-2 border-dashed transition-all duration-200 ease-in-out
-            flex flex-col items-center justify-center gap-6 p-8
-            ${
-              isDragOver
-                ? "border-primary bg-primary/5 scale-[1.01]"
-                : "border-gray-300 bg-gray-50/50 hover:bg-gray-50 hover:border-gray-400"
-            }
-          `}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={onDropFile}
-        >
-          <div className="bg-white p-4 rounded-full shadow-sm border border-gray-100">
-             <CloudUpload size={48} className={`text-primary ${isDragOver ? 'animate-bounce' : ''}`} />
-          </div>
-          
-          <div className="text-center space-y-2">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Tải CV của bạn lên
-            </h3>
-            <p className="text-sm text-gray-500 max-w-xs mx-auto">
-              Kéo thả tệp vào đây hoặc nhấn vào nút bên dưới để chọn tệp từ máy tính
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
-              Hỗ trợ: PDF, DOC, DOCX (Tối đa 10MB)
-            </p>
-          </div>
+    <div className="lg:col-span-4 space-y-6">
+      {/* PDF Preview Card */}
+      <div className="bg-[#1e293b] rounded-xl p-4 border border-slate-700/50 flex flex-col items-center justify-center min-h-[400px] relative">
+        {/* Mock Page visual */}
+        <div className="w-[80%] h-[350px] bg-slate-200 rounded shadow-lg flex flex-col p-4 space-y-3 opacity-90 transition-transform hover:scale-[1.02] cursor-pointer">
+          <div className="w-1/3 h-4 bg-slate-300 rounded mb-4" />
+          <div className="w-full h-2 bg-slate-300 rounded" />
+          <div className="w-full h-2 bg-slate-300 rounded" />
+          <div className="w-2/3 h-2 bg-slate-300 rounded" />
 
-          <Button
-            size="lg"
-            className="shadow-md hover:shadow-lg transition-all"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            Chọn CV từ máy tính
-          </Button>
+          <div className="w-full h-px bg-slate-300 my-4" />
 
-          {uploadFileError && (
-             <div className="absolute bottom-8 flex items-center gap-2 text-red-500 bg-red-50 px-4 py-2 rounded-lg text-sm border border-red-100 animate-in fade-in slide-in-from-bottom-2">
-               <AlertCircle size={16} />
-               {uploadFileError}
-             </div>
-          )}
-        </div>
-      ) : (
-        <div className="w-full flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-300">
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-50 text-green-600 rounded-lg">
-                  <CheckCircle size={20} />
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900 truncate max-w-[200px] md:max-w-xs">
-                    {selectedFile?.name}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {(selectedFile?.size ? (selectedFile.size / 1024 / 1024).toFixed(2) : 0)} MB
-                  </p>
-                </div>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <div className="w-1/3 h-24 bg-slate-300 rounded" />
+              <div className="flex-1 space-y-2">
+                <div className="w-full h-2 bg-slate-300 rounded" />
+                <div className="w-full h-2 bg-slate-300 rounded" />
+                <div className="w-5/6 h-2 bg-slate-300 rounded" />
               </div>
-              
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setPreviewUrl(null);
-                    setSelectedFile(null);
-                  }}
-                  className="text-gray-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200"
-                >
-                  <X size={16} className="mr-2" />
-                  Hủy
-                </Button>
-                <Button 
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90 shadow-sm"
-                >
-                  Nâng cấp ngay
-                </Button>
-              </div>
-            </div>
-            
-            <div className="rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-              {renderPreview()}
             </div>
           </div>
         </div>
-      )}
+        <span className="absolute bottom-6 text-xs text-slate-500 font-medium">Page 1 of 2</span>
+      </div>
 
-      <input
-        type="file"
-        ref={fileInputRef}
-        accept={ALLOWED_CV_TYPES.join(",")}
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      {/* Current File Info */}
+      <div className="bg-[#1e293b] rounded-xl p-4 border border-slate-700/50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 bg-red-500/10 rounded-lg flex items-center justify-center text-red-500">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-white">John_Doe_CV_2024.pdf</p>
+            <p className="text-xs text-slate-500">2.4 MB • Uploaded just now</p>
+          </div>
+        </div>
+        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-slate-800">
+          <MoreVertical className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Upload Area */}
+      <div className="border border-dashed border-slate-700 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-slate-800/30 transition-colors cursor-pointer group">
+        <div className="h-12 w-12 bg-slate-800 rounded-full flex items-center justify-center mb-3 group-hover:bg-slate-700 transition-colors">
+          <Upload className="h-5 w-5 text-slate-400 group-hover:text-blue-400" />
+        </div>
+        <p className="text-sm font-medium text-white mb-1">Upload new version</p>
+        <p className="text-xs text-slate-500">Drag & drop or click to browse</p>
+      </div>
     </div>
   );
 };

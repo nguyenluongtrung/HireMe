@@ -5,21 +5,28 @@ import { Dispatch, ReactNode, SetStateAction, useState, createContext } from "re
 interface ContextValue {
   openHamburgerMenu: boolean;
   setOpenHamburgerMenu: Dispatch<SetStateAction<boolean>>;
+  isSidebarCollapsed: boolean;
+  setIsSidebarCollapsed: Dispatch<SetStateAction<boolean>>;
 }
 
 const defaultValue: ContextValue = {
   openHamburgerMenu: false,
-  setOpenHamburgerMenu: () => {},
+  setOpenHamburgerMenu: () => { },
+  isSidebarCollapsed: false,
+  setIsSidebarCollapsed: () => { },
 };
 
 export const GlobalStateContext = createContext<ContextValue>(defaultValue);
 
 export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
-   const [openHamburgerMenu, setOpenHamburgerMenu] = useState<boolean>(false)
+  const [openHamburgerMenu, setOpenHamburgerMenu] = useState<boolean>(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
 
   const contextValue: ContextValue = {
     openHamburgerMenu,
-    setOpenHamburgerMenu
+    setOpenHamburgerMenu,
+    isSidebarCollapsed,
+    setIsSidebarCollapsed
   };
 
   return (
