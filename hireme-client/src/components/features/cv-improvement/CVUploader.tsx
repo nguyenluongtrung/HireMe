@@ -152,7 +152,7 @@ export const CVUploader = () => {
             </div>
           </div>
         </div>
-        <span className="absolute bottom-6 text-xs text-slate-500 font-medium">Page 1 of 2</span>
+        <span className="absolute bottom-6 text-xs text-slate-500 font-medium">Trang 1 của 2</span>
       </div>
 
       {/* Current File Info */}
@@ -176,8 +176,8 @@ export const CVUploader = () => {
         <div className="h-12 w-12 bg-slate-800 rounded-full flex items-center justify-center mb-3 group-hover:bg-slate-700 transition-colors">
           <Upload className="h-5 w-5 text-slate-400 group-hover:text-blue-400" />
         </div>
-        <p className="text-sm font-medium text-white mb-1">Upload new version</p>
-        <p className="text-xs text-slate-500">Drag & drop or click to browse</p>
+        <p className="text-sm font-medium text-white mb-1">Tải lên tệp mới</p>
+        <p className="text-xs text-slate-500">Kéo thả hoặc nhấp để chọn tệp</p>
       </div>
     </div>
   );

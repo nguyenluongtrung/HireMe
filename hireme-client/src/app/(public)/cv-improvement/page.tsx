@@ -15,19 +15,19 @@ export default function CVImprovement() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Resume Analysis</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Phân tích CV</h1>
           <p className="text-slate-400">
-            AI-powered feedback on structure, grammar, and tone for your latest upload.
+            Nhận feedback về cấu trúc, ngữ pháp và giọng điệu cho CV của bạn.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white gap-2">
             <History className="h-4 w-4" />
-            History
+            Lịch sử
           </Button>
           <Button className="bg-blue-600 hover:bg-blue-500 text-white gap-2">
             <FileText className="h-4 w-4" />
-            Manual Edit
+            Chỉnh sửa
           </Button>
         </div>
       </div>

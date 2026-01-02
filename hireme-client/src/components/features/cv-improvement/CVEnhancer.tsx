@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   AlertCircle,
   CheckCircle,
@@ -8,6 +7,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 
 export const CVEnhancer = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -46,15 +47,15 @@ export const CVEnhancer = () => {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span className="text-3xl font-bold text-white">78</span>
-            <span className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold">Score</span>
+            <span className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold">Điểm</span>
           </div>
         </div>
 
         <div className="flex-1 space-y-4 w-full">
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">Good start, but needs polish.</h3>
+            <h3 className="text-xl font-bold text-white mb-1">Tốt nhưng cần cải thiện về cấu trúc</h3>
             <p className="text-sm text-slate-400">
-              Your resume has strong content, but structure and ATS readability can be improved to pass automated filters.
+              CV của bạn có nội dung mạnh mẽ nhưng cấu trúc và khả năng đọc được của ATS có thể cải thiện để vượt qua các bộ lọc tự động.
             </p>
           </div>
 
@@ -62,14 +63,14 @@ export const CVEnhancer = () => {
           <div className="space-y-1">
             <div className="flex justify-between text-xs font-medium">
               <span className="flex items-center gap-1.5 text-slate-300">
-                <Wand2 className="h-3.5 w-3.5 text-blue-400" /> ATS Compatibility
+                <Wand2 className="h-3.5 w-3.5 text-blue-400" /> Độ tương thích với ATS
               </span>
-              <span className="text-blue-400">High (85%)</span>
+              <span className="text-blue-400">Cao (85%)</span>
             </div>
             <div className="h-2 w-full bg-slate-700 rounded-full overflow-hidden">
               <div className="h-full bg-blue-500 w-[85%] rounded-full" />
             </div>
-            <p className="text-[10px] text-slate-500">Based on standard Applicant Tracking System parsers.</p>
+            <p className="text-[10px] text-slate-500">Dựa trên các phân tích của hệ thống ATS.</p>
           </div>
         </div>
       </div>
