@@ -49,6 +49,7 @@ const useUserProfile = ({
       phoneNumber: data.phoneNumber,
       avatarUrl: data.avatarUrl,
       id: data.id,
+      createdAt: data.createdAt,
     };
   };
 

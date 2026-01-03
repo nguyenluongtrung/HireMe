@@ -27,7 +27,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:cursor-pointer hover:text-foreground"
           tabIndex={-1}
         >
           <ImageRound
