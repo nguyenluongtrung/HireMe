@@ -30,6 +30,7 @@ model User {
   createdRoles                Role[]                @relation("RoleCreatedBy")
   updatedRoles                Role[]                @relation("RoleUpdatedBy")
   deletedRoles                Role[]                @relation("RoleDeletedBy")
+  applications                Application[]
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   createdUsers User[] @relation("CreatorUsers")
@@ -103,11 +104,37 @@ model Role {
   @@index([deletedAt])
 }
 
+model Application {
+  id          Int          @id @default(autoincrement())
+  companyName String       @db.VarChar(500)
+  position    String       @default("")
+  notes       String       @default("")
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  status      ApplicationStatus @default(PENDING)
+
+  dateApplied DateTime     @default(now())
+  
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([deletedAt])
+}
+
 enum VerificationCodeType {
   REGISTER
   FORGOT_PASSWORD
   LOGIN
   DISABLE_2FA
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPLIED
+  INTERVIEWED
+  ACCEPTED
+  REJECTED
 }
 
 enum UserStatus {

@@ -4,12 +4,13 @@ import {
   CreateRoleResSchema,
   GetRoleDetailResSchema,
   GetRoleParamsSchema,
-  GetRolesQuerySchema,
-  GetRolesResSchema,
   UpdateRoleBodySchema,
 } from "./role.model"
 
-export class GetRolesResDTO extends createZodDto(GetRolesResSchema) {}
+import { RoleSchema } from "src/shared/models/shared-role.model"
+import { PaginationResSchema } from "src/shared/models/shared-pagination.model"
+
+export class GetRolesResDTO extends createZodDto(PaginationResSchema(RoleSchema)) {}
 
 export class GetRoleParamsDTO extends createZodDto(GetRoleParamsSchema) {}
 
@@ -20,5 +21,3 @@ export class CreateRoleBodyDTO extends createZodDto(CreateRoleBodySchema) {}
 export class CreateRoleResDTO extends createZodDto(CreateRoleResSchema) {}
 
 export class UpdateRoleBodyDTO extends createZodDto(UpdateRoleBodySchema) {}
-
-export class GetRolesQueryDTO extends createZodDto(GetRolesQuerySchema) {}

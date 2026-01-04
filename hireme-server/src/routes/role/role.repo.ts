@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common'
 
 import {
   CreateRoleBodyType,
-  GetRolesQueryType,
   GetRolesResType,
   RoleWithPermissionsType,
   UpdateRoleBodyType,
 } from 'src/routes/role/role.model'
 
 import { SerializeAll } from 'src/shared/constants/serialize.decorator'
+import { PaginationQueryType } from 'src/shared/models/shared-pagination.model'
 import { RolePermissionsType, RoleType } from 'src/shared/models/shared-role.model'
 import { PrismaService } from 'src/shared/services/prisma.service'
 
@@ -17,7 +17,7 @@ import { PrismaService } from 'src/shared/services/prisma.service'
 export class RoleRepo {
   constructor(private prismaService: PrismaService) {}
 
-  async list(pagination: GetRolesQueryType): Promise<GetRolesResType> {
+  async list(pagination: PaginationQueryType): Promise<GetRolesResType> {
     const skip = (Number(pagination.page) - 1) * Number(pagination.limit)
     const take = Number(pagination.limit)
     const [totalItems, data] = await Promise.all([

@@ -1,13 +1,13 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Inject, Injectable } from '@nestjs/common'
-import { Cache } from 'cache-manager'
+import { Injectable } from '@nestjs/common'
 
 import { NotFoundRecordException } from 'src/shared/error'
 import { isNotFoundPrismaError, isUniqueConstraintPrismaError } from 'src/shared/helpers'
 import { RoleName } from 'src/shared/constants/role.constant'
+import { PaginationQueryType } from 'src/shared/models/shared-pagination.model'
 
-import { CreateRoleBodyType, GetRolesQueryType, UpdateRoleBodyType } from 'src/routes/role/role.model'
+import { CreateRoleBodyType, UpdateRoleBodyType } from 'src/routes/role/role.model'
 import { ProhibitedActionOnBaseRoleException, RoleAlreadyExistsException } from 'src/routes/role/role.error'
+
 import { RoleRepo } from './role.repo'
 
 @Injectable()
@@ -16,7 +16,7 @@ export class RoleService {
     private roleRepo: RoleRepo,
   ) {}
 
-  async list(pagination: GetRolesQueryType) {
+  async list(pagination: PaginationQueryType) {
     const data = await this.roleRepo.list(pagination)
     return data
   }

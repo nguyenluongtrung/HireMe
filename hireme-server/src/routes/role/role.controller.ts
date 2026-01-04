@@ -3,13 +3,13 @@ import { ZodResponse } from 'nestjs-zod'
 
 import { ActiveUser } from 'src/shared/decorators/active-user.decorator'
 import { MessageResDTO } from 'src/shared/dtos/response.dto'
+import { PaginationQueryDTO } from 'src/shared/dtos/pagination.dto'
 
 import {
   CreateRoleBodyDTO,
   CreateRoleResDTO,
   GetRoleDetailResDTO,
   GetRoleParamsDTO,
-  GetRolesQueryDTO,
   GetRolesResDTO,
   UpdateRoleBodyDTO,
 } from 'src/routes/role/role.dto'
@@ -22,7 +22,7 @@ export class RoleController {
 
   @Get()
   @ZodResponse({ type: GetRolesResDTO })
-  list(@Query() query: GetRolesQueryDTO) {
+  list(@Query() query: PaginationQueryDTO) {
     return this.roleService.list({
       page: query.page,
       limit: query.limit,
