@@ -6,9 +6,10 @@ import { SharedModule } from "./shared/shared.module"
 import { AuthModule } from "./routes/auth/auth.module"
 import { RoleModule } from "./routes/role/role.module"
 import { MediaModule } from "./routes/media/media.module"
+import { ApplicationModule } from './routes/application/application.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, RoleModule, MediaModule],
+  imports: [SharedModule, AuthModule, RoleModule, MediaModule, ApplicationModule],
   controllers: [AppController],
   providers: [AppService],
 })
