@@ -2,9 +2,11 @@ import { createZodDto } from "nestjs-zod";
 
 import { PaginationResSchema } from "src/shared/models/shared-pagination.model";
 
-import { ApplicationSchema, GetApplicationParamsSchema, UpsertApplicationBodySchema, UpsertApplicationResSchema } from "./application.model";
+import { ApplicationSchema, GetApplicationParamsSchema, GetApplicationsQuerySchema, UpsertApplicationBodySchema, UpsertApplicationResSchema } from "./application.model";
 
 export class GetApplicationsResDTO extends createZodDto(PaginationResSchema(ApplicationSchema)) {}
+
+export class GetApplicationsQueryDTO extends createZodDto(GetApplicationsQuerySchema) {}
 
 export class GetApplicationDetailResDTO extends createZodDto(ApplicationSchema) {}
 

@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ZodResponse } from 'nestjs-zod';
 
 import { MessageResDTO } from 'src/shared/dtos/response.dto';
-import { PaginationQueryDTO } from 'src/shared/dtos/pagination.dto';
+import { ActiveUser } from 'src/shared/decorators/active-user.decorator';
 
 import { ApplicationService } from './application.service';
-import { GetApplicationDetailResDTO, GetApplicationParamsDTO, GetApplicationsResDTO, UpsertApplicationBodyDTO, UpsertApplicationResDTO } from './application.dto';
+import { GetApplicationDetailResDTO, GetApplicationParamsDTO, GetApplicationsQueryDTO, GetApplicationsResDTO, UpsertApplicationBodyDTO, UpsertApplicationResDTO } from './application.dto';
 
 @Controller('applications')
 export class ApplicationController {
@@ -13,10 +13,15 @@ export class ApplicationController {
 
     @Get()
     @ZodResponse({type: GetApplicationsResDTO})
-    list(@Query() query: PaginationQueryDTO){
+    list(@Query() query: GetApplicationsQueryDTO, @ActiveUser('userId') userId: number){
         return this.applicationService.list({
             page: query.page,
             limit: query.limit,
+            status: query.status,
+            companyName: query.companyName,
+            position: query.position,
+            dateApplied: query.dateApplied,
+            userId,
         })
     }
 

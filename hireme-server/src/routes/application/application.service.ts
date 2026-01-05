@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { UpsertApplicationBodyType } from './application.model';
+import { GetApplicationsQueryType, UpsertApplicationBodyType } from './application.model';
 import { ApplicationRepo } from './application.repo';
 import { ApplicationAlreadyExistsException } from './application.error';
 
 import { NotFoundRecordException } from 'src/shared/error';
 import { isNotFoundPrismaError, isUniqueConstraintPrismaError } from 'src/shared/helpers';
-import { PaginationQueryType } from 'src/shared/models/shared-pagination.model';
 
 @Injectable()
 export class ApplicationService {
@@ -14,7 +13,7 @@ export class ApplicationService {
         private applicationRepo: ApplicationRepo
     ){}
 
-    async list(pagination: PaginationQueryType){
+    async list(pagination: GetApplicationsQueryType){
         const data = await this.applicationRepo.list(pagination)
         return data
     }
