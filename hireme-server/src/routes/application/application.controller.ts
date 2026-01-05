@@ -5,7 +5,7 @@ import { MessageResDTO } from 'src/shared/dtos/response.dto';
 import { ActiveUser } from 'src/shared/decorators/active-user.decorator';
 
 import { ApplicationService } from './application.service';
-import { GetApplicationDetailResDTO, GetApplicationParamsDTO, GetApplicationsQueryDTO, GetApplicationsResDTO, UpsertApplicationBodyDTO, UpsertApplicationResDTO } from './application.dto';
+import { GetApplicationDetailResDTO, GetApplicationParamsDTO, GetApplicationsQueryDTO, GetApplicationsResDTO, GetApplicationStatisticsResDTO, UpsertApplicationBodyDTO, UpsertApplicationResDTO } from './application.dto';
 
 @Controller('applications')
 export class ApplicationController {
@@ -23,6 +23,12 @@ export class ApplicationController {
             dateApplied: query.dateApplied,
             userId,
         })
+    }
+
+    @Get('statistics')
+    @ZodResponse({type: GetApplicationStatisticsResDTO})
+    statisticsByStatus(@ActiveUser('userId') userId: number){
+        return this.applicationService.statisticByStatus(userId)
     }
 
     @Get(':applicationId')
