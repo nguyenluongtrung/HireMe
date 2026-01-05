@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { PaginationResSchema } from "src/shared/models/shared-pagination.model";
+import { PaginationQuerySchema, PaginationResSchema } from "src/shared/models/shared-pagination.model";
 
 export const ApplicationSchema = z.object({
     id: z.number(),
@@ -13,6 +13,14 @@ export const ApplicationSchema = z.object({
 })
 
 export const GetApplicationsResSchema = PaginationResSchema(ApplicationSchema)
+
+export const GetApplicationsQuerySchema = PaginationQuerySchema.extend({
+    status: z.enum(['PENDING', 'APPLIED', 'INTERVIEWED', 'ACCEPTED', 'REJECTED']).or(z.literal('')).optional(),
+    companyName: z.string().max(500).optional(),
+    position: z.string().max(500).optional(),
+    dateApplied: z.coerce.date().optional(),
+    userId: z.coerce.number().optional(),
+})
 
 export const GetApplicationParamsSchema = z.object({
     applicationId: z.coerce.number(),
@@ -27,6 +35,8 @@ export const UpsertApplicationResSchema = ApplicationSchema.omit({
 }).strict()
 
 export type ApplicationType = z.infer<typeof ApplicationSchema> 
+
+export type GetApplicationsQueryType = z.infer<typeof GetApplicationsQuerySchema>
 
 export type GetApplicationParamsType = z.infer<typeof GetApplicationParamsSchema>
 
