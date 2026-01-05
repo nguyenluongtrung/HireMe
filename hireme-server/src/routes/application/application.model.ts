@@ -22,6 +22,13 @@ export const GetApplicationsQuerySchema = PaginationQuerySchema.extend({
     userId: z.coerce.number().optional(),
 })
 
+export const GetApplicationStatisticsResSchema = z.object({
+    applied: z.number(),
+    interviewed: z.number(),
+    accepted: z.number(),
+    rejected: z.number(),
+})
+
 export const GetApplicationParamsSchema = z.object({
     applicationId: z.coerce.number(),
 }).strict()
@@ -35,6 +42,8 @@ export const UpsertApplicationResSchema = ApplicationSchema.omit({
 }).strict()
 
 export type ApplicationType = z.infer<typeof ApplicationSchema> 
+
+export type GetApplicationStatisticsResType = z.infer<typeof GetApplicationStatisticsResSchema>
 
 export type GetApplicationsQueryType = z.infer<typeof GetApplicationsQuerySchema>
 

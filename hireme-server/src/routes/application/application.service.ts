@@ -18,6 +18,11 @@ export class ApplicationService {
         return data
     }
 
+    async statisticByStatus(userId: number){
+        const data = await this.applicationRepo.statisticByStatus(userId)
+        return data
+    }
+
     async findById(id: number){
         const application = await this.applicationRepo.findById(id)
         if(!application){

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { SerializeAll } from 'src/shared/constants/serialize.decorator'
 import { PrismaService } from 'src/shared/services/prisma.service'
 
-import { ApplicationType, GetApplicationsQueryType, GetApplicationsResType, UpsertApplicationBodyType } from './application.model'
+import { ApplicationType, GetApplicationsQueryType, GetApplicationsResType, GetApplicationStatisticsResType, UpsertApplicationBodyType } from './application.model'
 
 @Injectable()
 @SerializeAll()
@@ -47,6 +47,46 @@ export class ApplicationRepo {
       limit: pagination.limit,
       totalPages: Math.ceil(totalItems / pagination.limit),
     } 
+  }
+
+  async statisticByStatus(userId: number): Promise<GetApplicationStatisticsResType>{
+    const data = await this.prismaService.application.groupBy({
+      by: ['status'],
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      _count: {
+        status: true,
+      },
+    })
+    
+    const result = {
+      applied: 0,
+      interviewed: 0,
+      accepted: 0,
+      rejected: 0,
+    }
+
+    data.forEach((group) => {
+      const count = group._count.status
+      switch (group.status) {
+        case 'APPLIED':
+          result.applied = count
+          break
+        case 'INTERVIEWED':
+          result.interviewed = count
+          break
+        case 'ACCEPTED':
+          result.accepted = count
+          break
+        case 'REJECTED':
+          result.rejected = count
+          break
+      } 
+    })
+
+    return result
   }
 
   findById(id: number): Promise<ApplicationType>{
