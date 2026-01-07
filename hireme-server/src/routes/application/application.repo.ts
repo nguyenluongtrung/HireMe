@@ -99,7 +99,6 @@ export class ApplicationRepo {
   }
 
   create({ data}: {data: UpsertApplicationBodyType}): Promise<ApplicationType>{
-    console.log(data)
     return this.prismaService.application.create({
       data
     }) as any
@@ -116,6 +115,7 @@ export class ApplicationRepo {
   }
 
   delete({ id }: { id: number }): Promise<ApplicationType> {
+    console.log(id)
     return this.prismaService.application.delete({
       where: {
         id,

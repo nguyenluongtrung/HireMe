@@ -1,79 +1,65 @@
-import { MoreHorizontal, Eye, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DeleteApplicationModal } from "./DeleteApplicationModal";
+import { ApplicationModal } from "./ApplicationModal";
 
-import { cn } from "@/lib/utils";
+import useApplicationList from "@/hooks/applications/useApplicationList";
+import useApplicationForm from "@/hooks/applications/useApplicationForm";
 
-export const ApplicationsTable = () => {
-    const applications = [
-        {
-            id: 1,
-            company: "Google",
-            source: "Referral",
-            logo: "G",
-            logoBg: "bg-white text-slate-900",
-            position: "Senior Designer",
-            match: "95% Phù hợp",
-            date: "24 Th10, 2023",
-            status: "Interview",
-            statusColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-            note: "Referral từ Sarah. Chuẩn bị portfolio...",
-        },
-        {
-            id: 2,
-            company: "Spotify",
-            source: "LinkedIn",
-            logo: "S",
-            logoBg: "bg-green-500 text-white",
-            position: "Product Manager",
-            match: "72% Phù hợp",
-            date: "20 Th10, 2023",
-            status: "Rejected",
-            statusColor: "bg-red-500/10 text-red-400 border-red-500/20",
-            note: "Thử lại sau 6 tháng.",
-        },
-        {
-            id: 3,
-            company: "Stripe",
-            source: "Recruiter",
-            logo: "S",
-            logoBg: "bg-indigo-500 text-white",
-            position: "Frontend Developer",
-            match: "88% Phù hợp",
-            date: "18 Th10, 2023",
-            status: "Offer",
-            statusColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-            note: "Đang đàm phán lương.",
-            highlight: true,
-        },
-        {
-            id: 4,
-            company: "Airbnb",
-            source: "Direct Apply",
-            logo: "A",
-            logoBg: "bg-rose-500 text-white",
-            position: "UX Engineer",
-            match: "Analyzing...",
-            date: "15 Th10, 2023",
-            status: "Applied",
-            statusColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-            note: "-",
-        },
-        {
-            id: 5,
-            company: "Notion",
-            source: "Direct Apply",
-            logo: "N",
-            logoBg: "bg-black text-white border border-slate-700",
-            position: "Marketing Lead",
-            match: "91% Phù hợp",
-            date: "12 Th10, 2023",
-            status: "Applied",
-            statusColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-            note: "Cover letter được viết riêng.",
-        },
-    ];
+import { cn, getRandomColor } from "@/lib/utils";
+import { formatDate } from "@/lib/date";
+
+import { Application } from "@/interfaces/application";
+
+import { ModalMode } from "@/contants/enums";
+
+export const ApplicationsTable = ({ searchDebounce, date }: { searchDebounce: string, date: Date | undefined }) => {
+    const [page, setPage] = useState(1);
+
+    const { data: applicationList, isLoading } = useApplicationList({ page, limit: 5, searchDebounce, date });
+    const { handleDeleteApplication, handleUpdateApplication } = useApplicationForm();
+
+    const [selectedApplicationToDelete, setSelectedApplicationToDelete] = useState<Application | null>(null);
+    const [selectedApplicationToUpdate, setSelectedApplicationToUpdate] = useState<Application | null>(null);
+
+    const getStatusConfig = (status: string) => {
+        const normalizedStatus = status.toLowerCase();
+        if (normalizedStatus.includes("interview")) {
+            return { label: "Phỏng Vấn", color: "text-purple-400 border-purple-400/20 bg-purple-400/10" };
+        }
+        if (normalizedStatus.includes("rejected")) {
+            return { label: "Bị Từ Chối", color: "text-red-400 border-red-400/20 bg-red-400/10" };
+        }
+        if (normalizedStatus.includes("offer")) {
+            return { label: "Đề Nghị", color: "text-emerald-400 border-emerald-400/20 bg-emerald-400/10" };
+        }
+        return { label: "Đã Nộp", color: "text-blue-400 border-blue-400/20 bg-blue-400/10" };
+    };
+
+    const handleDeleteClick = (app: Application) => {
+        setSelectedApplicationToDelete(app);
+    };
+
+    const handleConfirmDelete = () => {
+        handleDeleteApplication(selectedApplicationToDelete?.id || 0);
+        setSelectedApplicationToDelete(null);
+    };
+
+    const handleUpdateClick = (app: Application) => {
+        setSelectedApplicationToUpdate(app);
+    };
+
+    const handleConfirmUpdate = (data: Partial<Application>) => {
+        handleUpdateApplication(selectedApplicationToUpdate?.id || 0, data);
+        setSelectedApplicationToUpdate(null);
+    };
+
+    if (isLoading) {
+        return <div className="p-8 text-center text-slate-400">Đang tải dữ liệu...</div>;
+    }
 
     return (
         <div className="bg-[#1e293b] rounded-xl border border-slate-700/50 overflow-hidden">
@@ -90,100 +76,136 @@ export const ApplicationsTable = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700/50">
-                        {applications.map((app) => (
-                            <tr
-                                key={app.id}
-                                className={cn(
-                                    "hover:bg-slate-800/50 transition-colors group",
-                                    app.highlight && "bg-blue-500/5 hover:bg-blue-500/10"
-                                )}
-                            >
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={cn(
-                                                "h-10 w-10 rounded-lg flex items-center justify-center font-bold text-lg shrink-0",
-                                                app.logoBg
-                                            )}
-                                        >
-                                            {app.logo}
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-white">
-                                                {app.company}
-                                            </div>
-                                            <div className="text-xs text-slate-500">
-                                                {app.source}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="font-medium text-slate-200">
-                                        {app.position}
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-xs text-blue-400 mt-1">
-                                        <Sparkles className="h-3 w-3" />
-                                        {app.match}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">{app.date}</td>
-                                <td className="px-6 py-4">
-                                    <Badge
-                                        variant="outline"
-                                        className={cn(
-                                            "rounded-full px-2.5 py-0.5 text-xs font-medium border",
-                                            app.statusColor
-                                        )}
+                        {applicationList && applicationList.data.length > 0 ? (
+                            applicationList.data.map((app) => {
+                                const statusConfig = getStatusConfig(app.status);
+                                return (
+                                    <tr
+                                        key={app.id}
+                                        className="hover:bg-slate-800/50 transition-colors group"
                                     >
-                                        {app.status === "Interview" && "Phỏng Vấn"}
-                                        {app.status === "Rejected" && "Bị Từ Chối"}
-                                        {app.status === "Offer" && "Đề Nghị"}
-                                        {app.status === "Applied" && "Đã Nộp"}
-                                    </Badge>
-                                </td>
-                                <td className="px-6 py-4 max-w-[200px] truncate">
-                                    {app.note}
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    {app.highlight ? (
-                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-400 bg-blue-400/10 hover:bg-blue-400/20">
-                                            <Eye className="h-4 w-4" />
-                                        </Button>
-                                    ) : (
-                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-500 hover:text-white hover:bg-slate-700 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                    )}
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className={cn(
+                                                        "h-10 w-10 rounded-lg flex items-center justify-center font-bold text-lg shrink-0",
+                                                        getRandomColor(app.companyName)
+                                                    )}
+                                                >
+                                                    {app.companyName.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <div className="font-semibold text-white max-w-[200px] truncate">
+                                                        {app.companyName}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="font-medium text-slate-200">
+                                                {app.position}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {formatDate(app.dateApplied || app.createdAt)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Badge
+                                                variant="outline"
+                                                className={cn(
+                                                    "rounded-full px-2.5 py-0.5 text-xs font-medium border",
+                                                    statusConfig.color
+                                                )}
+                                            >
+                                                {statusConfig.label}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4 max-w-[200px] truncate">
+                                            {app.notes || "-"}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end items-center gap-1">
+                                                <Button size="icon" variant="ghost" className="h-6 w-6 text-orange-400 bg-orange-400/10 hover:bg-orange-400/20" title="Chỉnh sửa" onClick={() => handleUpdateClick(app)}>
+                                                    <Pencil className="h-3.5 w-3.5" />
+                                                </Button>
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="h-6 w-6 text-red-400 bg-red-400/10 hover:bg-red-400/20"
+                                                    title="Xóa"
+                                                    onClick={() => handleDeleteClick(app)}
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                                    Chưa có dữ liệu ứng tuyển nào.
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
 
             {/* Pagination Footer */}
-            <div className="px-6 py-4 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-                <div>Hiển thị <span className="text-white font-medium">1</span> đến <span className="text-white font-medium">5</span> của <span className="text-white font-medium">12</span> kết quả</div>
+            {applicationList && (
+                <div className="px-6 py-4 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <div>
+                        Hiển thị <span className="text-white font-medium">{(applicationList.page - 1) * applicationList.limit + 1}</span> đến <span className="text-white font-medium">{Math.min(applicationList.page * applicationList.limit, applicationList.totalItems)}</span> của <span className="text-white font-medium">{applicationList.totalItems}</span> kết quả
+                    </div>
 
-                <div className="flex items-center gap-1">
-                    <Button variant="outline" size="icon" className="h-8 w-8 border-slate-700 bg-slate-800 text-slate-400 hover:text-white disabled:opacity-50" disabled>
-                        &lt;
-                    </Button>
-                    <Button variant="default" size="icon" className="h-8 w-8 bg-blue-600 text-white hover:bg-blue-500">
-                        1
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-800">
-                        2
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-800">
-                        3
-                    </Button>
-                    <Button variant="outline" size="icon" className="h-8 w-8 border-slate-700 bg-slate-800 text-slate-400 hover:text-white">
-                        &gt;
-                    </Button>
+                    <div className="flex items-center gap-1">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 border-slate-700 bg-slate-800 text-slate-400 hover:text-white disabled:opacity-50"
+                            disabled={applicationList.page <= 1}
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                        >
+                            &lt;
+                        </Button>
+                        <Button variant="default" size="icon" className="h-8 w-8 bg-blue-600 text-white hover:bg-blue-500">
+                            {applicationList.page}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 border-slate-700 bg-slate-800 text-slate-400 hover:text-white disabled:opacity-50"
+                            disabled={applicationList.page >= applicationList.totalPages}
+                            onClick={() => setPage(p => p + 1)}
+                        >
+                            &gt;
+                        </Button>
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {selectedApplicationToDelete && (
+                <DeleteApplicationModal
+                    isOpen={true}
+                    onClose={() => setSelectedApplicationToDelete(null)}
+                    onConfirm={handleConfirmDelete}
+                    applicationName={selectedApplicationToDelete.position}
+                    companyName={selectedApplicationToDelete.companyName}
+                />
+            )}
+
+            {selectedApplicationToUpdate && (
+                <ApplicationModal
+                    isOpen={true}
+                    mode={ModalMode.UPDATE}
+                    initialData={selectedApplicationToUpdate}
+                    onSave={(data) => handleConfirmUpdate(data)}
+                    onClose={() => setSelectedApplicationToUpdate(null)}
+                />
+            )}
         </div>
     );
 };

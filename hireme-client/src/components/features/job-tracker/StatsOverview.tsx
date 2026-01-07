@@ -1,13 +1,17 @@
 import { Send, Users, Trophy, Ban } from "lucide-react";
 
+import useApplicationStatistics from "@/hooks/applications/useApplicationStatistics";
+
 import { cn } from "@/lib/utils";
 
 export const StatsOverview = () => {
+    const { data: statsData, isLoading } = useApplicationStatistics();
+
     const stats = [
         {
             label: "Đã Ứng Tuyển",
-            value: "12",
-            trend: "+2 tuần này",
+            value: statsData?.applied || 0,
+            trend: "Tổng quan",
             trendColor: "text-emerald-400",
             icon: Send,
             iconColor: "text-blue-400",
@@ -15,8 +19,8 @@ export const StatsOverview = () => {
         },
         {
             label: "Phỏng Vấn",
-            value: "3",
-            trend: "+1 tuần này",
+            value: statsData?.interviewed || 0,
+            trend: "Đang diễn ra",
             trendColor: "text-emerald-400",
             icon: Users,
             iconColor: "text-purple-400",
@@ -24,16 +28,16 @@ export const StatsOverview = () => {
         },
         {
             label: "Đề Nghị",
-            value: "1",
+            value: statsData?.accepted || 0,
             subtext: "Cần hành động",
             trendColor: "text-white",
             icon: Trophy,
             iconColor: "text-blue-500",
-            borderColor: "border-blue-500/30 bg-blue-900/10", // Highlighted card
+            borderColor: "border-slate-700/50",
         },
         {
             label: "Từ Chối",
-            value: "5",
+            value: statsData?.rejected || 0,
             subtext: "Cố lên nhé!",
             trendColor: "text-slate-400",
             icon: Ban,
@@ -42,13 +46,23 @@ export const StatsOverview = () => {
         },
     ];
 
+    if (isLoading) {
+        return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[...Array(4)].map((_, i) => (
+                    <div key={i} className="bg-[#1e293b] h-32 rounded-xl animate-pulse border border-slate-700/50" />
+                ))}
+            </div>
+        );
+    }
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {stats.map((stat, index) => (
                 <div
                     key={index}
                     className={cn(
-                        "bg-[#1e293b] rounded-xl p-5 border flex flex-col justify-between relative overflow-hidden transition-colors",
+                        "bg-[#1e293b] rounded-xl p-5 border flex flex-col justify-between relative overflow-hidden transition-colors hover:-translate-y-1 hover:shadow-xl hover:cursor-pointer hover:shadow-black/20 transition-all duration-300 hover:border-slate-600",
                         stat.borderColor
                     )}
                 >

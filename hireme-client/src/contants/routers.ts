@@ -66,5 +66,8 @@ export const apiEndpoints = {
   SYSTEM: {
     USER_PROFILE: "/auth/me",
     PRESIGNED_URL: "/media/images/upload/presigned-url",
+    APPLICATIONS: "/applications",
+    APPICATION_DETAIL: (id: number) => `/applications/${id}`,
+    APPLICATION_STATISTICS: "/applications/statistics",
   },
 };

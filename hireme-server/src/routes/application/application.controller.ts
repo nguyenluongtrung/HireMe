@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ZodResponse } from 'nestjs-zod';
 
 import { MessageResDTO } from 'src/shared/dtos/response.dto';
@@ -39,18 +39,21 @@ export class ApplicationController {
 
     @Post()
     @ZodResponse({type: UpsertApplicationResDTO})
-    create(@Body() body: UpsertApplicationBodyDTO){
+    create(@Body() body: UpsertApplicationBodyDTO, @ActiveUser('userId') userId: number){
         return this.applicationService.create({
-            data: body,
+            data: {
+                ...body,
+                userId,
+            }
         })
     }
 
-    @Put(':applicationId')
+    @Patch(':applicationId')
     @ZodResponse({type: UpsertApplicationResDTO})
     update(@Body() body: UpsertApplicationBodyDTO, @Param() params: GetApplicationParamsDTO){
         return this.applicationService.update({
             data: body,
-            id: params.applicationId,
+            id: Number(params.applicationId),
         })
     }
 
@@ -58,7 +61,7 @@ export class ApplicationController {
     @ZodResponse({type: MessageResDTO})
     delete(@Param() params: GetApplicationParamsDTO){
         return this.applicationService.delete({
-            id: params.applicationId,
+            id: Number(params.applicationId),
         })
     }
 }

@@ -26,6 +26,22 @@ h6{
   --color-error: #FB2C36
 }
 
+html *::-webkit-scrollbar {
+  border-radius: 0;
+  width: 8px;
+  height: 8px;
+}
+
+html *::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(200, 199, 199, 0.15);
+}
+
+html *::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgba(162, 162, 162, 0);
+}
+
 /* No scrollbar */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
