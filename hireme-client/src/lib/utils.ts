@@ -36,3 +36,14 @@ export const updateMenuItemCurrent = (menuItems: MenuItem[], pathname: string): 
     return updatedItem;
   });
 };
+
+export const getRandomColor = (name: string) => {
+    const colors = [
+        "bg-blue-500/10 text-blue-500",
+        "bg-purple-500/10 text-purple-500",
+        "bg-emerald-500/10 text-emerald-500",
+        "bg-orange-500/10 text-orange-500",
+        "bg-pink-500/10 text-pink-500",
+    ];
+    return colors[name.length % colors.length];
+};

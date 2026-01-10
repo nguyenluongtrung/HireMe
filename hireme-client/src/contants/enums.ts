@@ -18,3 +18,16 @@ export enum SessionStatus {
   AUTHENTICATED = "authenticated",
   UNAUTHENTICATED = "unauthenticated",
 }
+
+export enum ModalMode {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+}
+
+export enum ApplicationStatus {
+  PENDING = "PENDING",
+  APPLIED = "APPLIED",
+  INTERVIEWED = "INTERVIEWED",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+}
