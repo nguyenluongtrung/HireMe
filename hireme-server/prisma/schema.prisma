@@ -31,6 +31,7 @@ model User {
   updatedRoles                Role[]                @relation("RoleUpdatedBy")
   deletedRoles                Role[]                @relation("RoleDeletedBy")
   applications                Application[]
+  knowledgeItems              KnowledgeItem[]
   createdById  Int?
   createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
   createdUsers User[] @relation("CreatorUsers")
@@ -122,6 +123,57 @@ model Application {
   @@index([deletedAt])
 }
 
+// Knowledge Hub Models
+model KnowledgeItem {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(500)
+  type        KnowledgeItemType @default(FILE)
+  
+  // Content for files/notes (null for folders)
+  content     String?  @db.Text
+  
+  // Self-referential relationship for infinite nesting
+  parentId    Int?
+  parent      KnowledgeItem?  @relation("KnowledgeItemHierarchy", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  children    KnowledgeItem[] @relation("KnowledgeItemHierarchy")
+  
+  // Order within parent folder
+  order       Int      @default(0)
+  
+  // User ownership
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  
+  // Tags relationship (one-to-many)
+  tags        KnowledgeTag[]
+  
+  // Metadata
+  isFavorite  Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@index([type])
+}
+
+model KnowledgeTag {
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(100)
+  
+  // Belongs to one KnowledgeItem
+  knowledgeItemId Int
+  knowledgeItem   KnowledgeItem  @relation(fields: [knowledgeItemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  
+  createdAt       DateTime       @default(now())
+
+  @@index([knowledgeItemId])
+}
+
 enum VerificationCodeType {
   REGISTER
   FORGOT_PASSWORD
@@ -156,4 +208,9 @@ enum HTTPMethod {
 enum MediaType {
   IMAGE
   VIDEO
+}
+
+enum KnowledgeItemType {
+  FOLDER
+  FILE
 }

@@ -7,9 +7,10 @@ import { AuthModule } from "./routes/auth/auth.module"
 import { RoleModule } from "./routes/role/role.module"
 import { MediaModule } from "./routes/media/media.module"
 import { ApplicationModule } from './routes/application/application.module';
+import { KnowledgeHubModule } from './routes/knowledge-hub/knowledge-hub.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, RoleModule, MediaModule, ApplicationModule],
+  imports: [SharedModule, AuthModule, RoleModule, MediaModule, ApplicationModule, KnowledgeHubModule],
   controllers: [AppController],
   providers: [AppService],
 })

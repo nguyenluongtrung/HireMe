@@ -55,12 +55,12 @@ export class ApplicationService {
             return application
         } catch(error){
             if (isNotFoundPrismaError(error)) {
-                    throw NotFoundRecordException
-                  }
-                  if (isUniqueConstraintPrismaError(error)) {
-                    throw ApplicationAlreadyExistsException
-                  }
-                  throw error
+                throw NotFoundRecordException
+            }
+            if (isUniqueConstraintPrismaError(error)) {
+                throw ApplicationAlreadyExistsException
+            }
+            throw error
         }
     }
 
