@@ -21,7 +21,7 @@ export default function MainLayout({
       {/* Desktop Sidebar */}
       <div className={cn(
         "hidden md:block h-full shrink-0 transition-all duration-300 ease-in-out",
-        isSidebarCollapsed ? "w-[80px]" : "w-72"
+        isSidebarCollapsed ? "w-[80px]" : "w-[250px]"
       )}>
         <Sidebar />
       </div>
