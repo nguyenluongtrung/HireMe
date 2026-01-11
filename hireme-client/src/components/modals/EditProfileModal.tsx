@@ -164,11 +164,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                 text-sm
                                 px-0
                                 shadow-none
-                                ${
-                                  errors.name
-                                    ? "border-error focus:border-error"
-                                    : ""
-                                }
+                                ${errors.name
+                              ? "border-error focus:border-error"
+                              : ""
+                            }
                             `}
                           type="text"
                           {...field}
@@ -203,11 +202,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                 text-sm
                                 px-0
                                 shadow-none
-                                ${
-                                  errors.email
-                                    ? "border-error focus:border-error"
-                                    : ""
-                                }
+                                ${errors.email
+                              ? "border-error focus:border-error"
+                              : ""
+                            }
                             `}
                           type="text"
                           {...field}
@@ -240,11 +238,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                 text-sm
                                 px-0
                                 shadow-none
-                                ${
-                                  errors.phoneNumber
-                                    ? "border-error focus:border-error"
-                                    : ""
-                                }
+                                ${errors.phoneNumber
+                              ? "border-error focus:border-error"
+                              : ""
+                            }
                             `}
                           type="text"
                           {...field}
@@ -258,7 +255,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
             <div className="flex items-center gap-2 mt-5 justify-center">
               <Button
-                variant={"gray"}
+                variant={"secondary"}
                 onClick={onClose}
                 className="!w-[100px] text-black"
               >

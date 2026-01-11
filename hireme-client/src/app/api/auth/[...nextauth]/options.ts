@@ -1,31 +1,43 @@
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions } from "next-auth";
 // eslint-disable-next-line import/no-named-as-default
-import CredentialsProvider from 'next-auth/providers/credentials';
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
-import api from '@/base/api';
+import api from "@/base/api";
 
-import { login } from '@/apiRequests/auth/api';
+import { login } from "@/apiRequests/auth/api";
 
-import { User } from '@/interfaces/user';
+import { User } from "@/interfaces/user";
 
-import { apiEndpoints } from '@/contants/routers';
-import { ServerStatusCode } from '@/contants/enums';
+import { apiEndpoints, pageRouters } from "@/contants/routers";
+import { ServerStatusCode } from "@/contants/enums";
 
-import { decodeToken } from '@/lib/utils';
+import { decodeToken } from "@/lib/utils";
 
 export const options: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: String(process.env.GOOGLE_ID),
+      clientSecret: String(process.env.GOOGLE_SECRET),
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
     CredentialsProvider({
-      id: 'credentials',
-      name: 'User login',
+      id: "credentials",
+      name: "User login",
       credentials: {
         email: {
-          label: 'Email',
-          type: 'text',
+          label: "Email",
+          type: "text",
         },
         password: {
-          label: 'Password',
-          type: 'password',
+          label: "Password",
+          type: "password",
         },
       },
       async authorize(credentials) {
@@ -42,7 +54,7 @@ export const options: NextAuthOptions = {
 
           const token = loginData?.accessToken;
           if (!token) {
-            throw new Error('No token returned from login API');
+            throw new Error("No token returned from login API");
           }
 
           // 2. Call "get me" API with token
@@ -73,19 +85,53 @@ export const options: NextAuthOptions = {
     async redirect({ baseUrl }) {
       return baseUrl;
     },
-    async jwt({ token, user, trigger, session }) {
-      // Runs on login and subsequent requests
-      if (user) {
-        // When user logs in, store the API response into the token
-        token.accessToken = (user as any).token; // API's token
-        token.user = (user as any).user; // API's user object
+    async signIn(params) {
+      const { account } = params;
+      // Update token for Google provider
+      if (account?.provider === "google") {
+        console.log(account);
+        // Retrieve the Google ID token
+        const idToken = account.id_token;
+        // Call backend API with the Google ID token
+        // const { data: response } = await api.post(
+        //   apiRouters.LOGIN_GOOGLE_VERIFY,
+        //   {
+        //     token: idToken,
+        //   },
+        // );
       }
-      // Runs when update() is called from useSession()
-      if (trigger === 'update' && session?.user) {
-        token.user = {
-          ...(token.user as any),
-          ...session.user, // Merge only what was passed in update()
-        };
+      return true;
+    },
+    // async jwt({ token, user, trigger, session }) {
+    //   // Runs on login and subsequent requests
+    //   if (user) {
+    //     // When user logs in, store the API response into the token
+    //     token.accessToken = (user as any).token; // API's token
+    //     token.user = (user as any).user; // API's user object
+    //   }
+    //   // Runs when update() is called from useSession()
+    //   if (trigger === "update" && session?.user) {
+    //     token.user = {
+    //       ...(token.user as any),
+    //       ...session.user, // Merge only what was passed in update()
+    //     };
+    //   }
+
+    //   return token;
+    // },
+
+    async jwt({ token, user, account }) {
+      console.log("aaa", user, account?.provider);
+      // Credentials login
+      if (account?.provider === "credentials" && user) {
+        token.accessToken = (user as any).token;
+        token.user = (user as any).user;
+      }
+
+      // Google login
+      if (account?.provider === "google" && user) {
+        token.accessToken = "aaa";
+        token.user = { ...user };
       }
 
       return token;
@@ -100,17 +146,17 @@ export const options: NextAuthOptions = {
     },
   },
   theme: {
-    colorScheme: 'light',
+    colorScheme: "light",
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
   pages: {
-    signIn: '/',
-    signOut: '/',
-    error: '/',
+    signIn: "/",
+    signOut: "/",
+    error: "/",
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
 };

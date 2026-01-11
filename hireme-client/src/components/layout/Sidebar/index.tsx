@@ -49,7 +49,7 @@ const Sidebar = ({ className }: Props) => {
       <aside
         className={cn(
           "relative flex h-full flex-col bg-[#0f172a] text-slate-300 border-r border-slate-800 transition-all duration-300 ease-in-out",
-          isSidebarCollapsed ? "w-[80px]" : "w-full md:w-72",
+          isSidebarCollapsed ? "w-[80px]" : "w-full md:w-[250px]",
           className
         )}
       >
