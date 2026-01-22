@@ -3,7 +3,8 @@ import {
   FileText,
   Briefcase,
   Settings,
-  Bot
+  Bot,
+  Book
 } from "lucide-react";
 
 export const pageRouters = {
@@ -22,6 +23,10 @@ export const pageRouters = {
   CV_HISTORY: {
     name: "CV của tôi",
     href: "/cv-history",
+  },
+  KNOWLEDGE_HUB: {
+    name: "Kho kiến thức",
+    href: "/knowledge-hub",
   },
 };
 
@@ -50,6 +55,11 @@ export const MAIN_MENU = [
     name: "Phân tích AI",
     href: "/ai-analysis",
     icon: Bot,
+  },
+  {
+    name: "Kho kiến thức",
+    href: "/knowledge-hub",
+    icon: Book,
   },
   {
     name: "Cài đặt",
