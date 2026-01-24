@@ -37,6 +37,10 @@ export const UpdateMeBodySchema = UserSchema.pick({
 
 export const PublicUserSchema = UserSchema.omit({ password: true })
 
+export const GetAuthorizationUrlResSchema = z.object({
+  url: z.string().url(),
+})
+
 export type RegisterBodyType = z.infer<typeof RegisterBodySchema>
 export type RegisterResType = z.infer<typeof PublicUserSchema>
 export type LoginBodyType = z.infer<typeof LoginBodySchema>
@@ -44,3 +48,4 @@ export type LoginResType = z.infer<typeof LoginResSchema>
 export type GetMeResType = z.infer<typeof PublicUserSchema>
 export type UpdateMeBodyType = z.infer<typeof UpdateMeBodySchema>
 export type UpdateMeResType = z.infer<typeof PublicUserSchema>
+export type GetAuthorizationUrlResType = z.infer<typeof GetAuthorizationUrlResSchema>

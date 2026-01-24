@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
-import { RoleName } from 'src/shared/constants/role.constant'
-import { SerializeAll } from 'src/shared/constants/serialize.decorator'
-import { RoleType } from 'src/shared/models/shared-role.model'
-import { PrismaService } from 'src/shared/services/prisma.service'
+import { Injectable } from "@nestjs/common"
+import { RoleName } from "src/shared/constants/role.constant"
+import { SerializeAll } from "src/shared/constants/serialize.decorator"
+import { RoleType } from "src/shared/models/shared-role.model"
+import { PrismaService } from "src/shared/services/prisma.service"
 
 @Injectable()
 @SerializeAll()
@@ -17,7 +17,7 @@ export class SharedRoleRepository {
     SELECT * FROM "Role" WHERE name = ${roleName} AND "deletedAt" IS NULL LIMIT 1;
   `.then((res: RoleType[]) => {
       if (res.length === 0) {
-        throw new Error('Role not found')
+        throw new Error("Role not found")
       }
       return res[0]
     })
