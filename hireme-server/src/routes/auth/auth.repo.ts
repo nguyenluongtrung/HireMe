@@ -11,9 +11,7 @@ import { PrismaService } from "src/shared/services/prisma.service"
 export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  createUser(
-    user: Pick<UserType, 'email' | 'name' | 'password' | 'roleId'>,
-  ): Promise<Omit<UserType, 'password'>> {
+  createUser(user: Pick<UserType, "email" | "name" | "password" | "roleId">): Promise<Omit<UserType, "password">> {
     return this.prismaService.user.create({
       data: user,
       omit: {
@@ -22,7 +20,21 @@ export class AuthRepository {
     }) as any
   }
 
-  findUniqueUserIncludeRole(where: WhereUniqueUserType, omitPassword: boolean = false): Promise<(UserType & { role: RoleType }) | null> {
+  createUserIncludeRole(
+    user: Pick<UserType, "email" | "name" | "password" | "phoneNumber" | "avatarUrl" | "roleId">,
+  ): Promise<UserType & { role: RoleType }> {
+    return this.prismaService.user.create({
+      data: user,
+      include: {
+        role: true,
+      },
+    }) as any
+  }
+
+  findUniqueUserIncludeRole(
+    where: WhereUniqueUserType,
+    omitPassword: boolean = false,
+  ): Promise<(UserType & { role: RoleType }) | null> {
     return this.prismaService.user.findFirst({
       where: {
         ...where,

@@ -1,13 +1,13 @@
-import z from 'zod'
-import * as fs from 'fs'
-import * as path from 'path'
-import { config } from 'dotenv'
+import z from "zod"
+import * as fs from "fs"
+import * as path from "path"
+import { config } from "dotenv"
 
 config({
-  path: '.env',
+  path: ".env",
 })
 // Kiểm tra coi thử có file .env hay chưa
-if (!fs.existsSync(path.resolve('.env'))) {
+if (!fs.existsSync(path.resolve(".env"))) {
   process.exit(1)
 }
 
@@ -23,6 +23,10 @@ const configSchema = z.object({
   S3_ACCESS_KEY: z.string(),
   S3_SECRET_KEY: z.string(),
   S3_BUCKET_NAME: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_REDIRECT_URI: z.string(),
+  GOOGLE_CLIENT_REDIRECT_URI: z.string(),
 })
 
 const configServer = configSchema.safeParse(process.env)
