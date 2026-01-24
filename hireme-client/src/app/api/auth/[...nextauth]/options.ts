@@ -1,31 +1,43 @@
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions } from "next-auth";
 // eslint-disable-next-line import/no-named-as-default
-import CredentialsProvider from 'next-auth/providers/credentials';
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
-import api from '@/base/api';
+import api from "@/base/api";
 
-import { login } from '@/apiRequests/auth/api';
+import { login } from "@/apiRequests/auth/api";
 
-import { User } from '@/interfaces/user';
+import { User } from "@/interfaces/user";
 
-import { apiEndpoints } from '@/contants/routers';
-import { ServerStatusCode } from '@/contants/enums';
+import { apiEndpoints } from "@/contants/routers";
+import { ServerStatusCode } from "@/contants/enums";
 
-import { decodeToken } from '@/lib/utils';
+import { decodeToken } from "@/lib/utils";
 
 export const options: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: String(process.env.GOOGLE_ID),
+      clientSecret: String(process.env.GOOGLE_SECRET),
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
     CredentialsProvider({
-      id: 'credentials',
-      name: 'User login',
+      id: "credentials",
+      name: "User login",
       credentials: {
         email: {
-          label: 'Email',
-          type: 'text',
+          label: "Email",
+          type: "text",
         },
         password: {
-          label: 'Password',
-          type: 'password',
+          label: "Password",
+          type: "password",
         },
       },
       async authorize(credentials) {
@@ -42,7 +54,7 @@ export const options: NextAuthOptions = {
 
           const token = loginData?.accessToken;
           if (!token) {
-            throw new Error('No token returned from login API');
+            throw new Error("No token returned from login API");
           }
 
           // 2. Call "get me" API with token
@@ -73,19 +85,30 @@ export const options: NextAuthOptions = {
     async redirect({ baseUrl }) {
       return baseUrl;
     },
-    async jwt({ token, user, trigger, session }) {
-      // Runs on login and subsequent requests
-      if (user) {
-        // When user logs in, store the API response into the token
-        token.accessToken = (user as any).token; // API's token
-        token.user = (user as any).user; // API's user object
+    async jwt({ token, user, account }) {
+      // ---- Credentials login (already OK) ----
+      if (account?.provider === "credentials" && user) {
+        token.accessToken = (user as any).token;
+        token.user = (user as any).user;
       }
-      // Runs when update() is called from useSession()
-      if (trigger === 'update' && session?.user) {
-        token.user = {
-          ...(token.user as any),
-          ...session.user, // Merge only what was passed in update()
-        };
+
+      // ---- Google login ----
+      if (account?.provider === "google" && user) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/v1/auth/google/login`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              idToken: account.id_token,
+            }),
+          },
+        );
+
+        const data = await res.json();
+
+        token.accessToken = data.accessToken;
+        token.user = { ...user };
       }
 
       return token;
@@ -93,24 +116,26 @@ export const options: NextAuthOptions = {
     async session({ session, token }) {
       session.user = token.user as User;
       session.accessToken = token.accessToken as string;
+
       const decodedToken = decodeToken(session.accessToken);
       const expirationDate = new Date(decodedToken.exp * 1000);
+
       session.expires = expirationDate.toISOString();
       return Promise.resolve(session);
     },
   },
   theme: {
-    colorScheme: 'light',
+    colorScheme: "light",
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
   pages: {
-    signIn: '/',
-    signOut: '/',
-    error: '/',
+    signIn: "/",
+    signOut: "/",
+    error: "/",
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
 };

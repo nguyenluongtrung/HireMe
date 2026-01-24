@@ -55,29 +55,9 @@ export class AuthController {
     return this.authService.updateMe(body, userId)
   }
 
-  @Get("google-link")
+  @Post("google/login")
   @IsPublic()
-  @ZodResponse({ type: GetAuthorizationUrlResDTO })
-  getAuthorizationUrl() {
-    return this.googleService.getAuthorizationUrl()
-  }
-
-  @Get("google/callback")
-  @IsPublic()
-  async googleCallback(@Query("code") code: string, @Res() res: Response) {
-    try {
-      const data = await this.googleService.googleCallback({
-        code,
-      })
-      return res.redirect(
-        `${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?accessToken=${data.accessToken}&refreshToken=${data.refreshToken}`,
-      )
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Đã xảy ra lỗi khi đăng nhập bằng Google, vui lòng thử lại bằng cách khác"
-      return res.redirect(`${envConfig.GOOGLE_CLIENT_REDIRECT_URI}?errorMessage=${message}`)
-    }
+  async googleLogin(@Body("idToken") idToken: string) {
+    return await this.googleService.loginWithGoogleIdToken(idToken)
   }
 }
