@@ -51,10 +51,10 @@ export default function SettingsPage() {
                             </Badge>
                         </div>
                         <p className="text-slate-400 flex items-center gap-2 text-sm">
-                            {userProfile?.jobTitle || ""} <span className="text-slate-600">•</span> {userProfile?.location || ""}
+                            {/* {userProfile?.jobTitle || ""} <span className="text-slate-600">•</span> {userProfile?.location || ""} */}
                         </p>
                         <p className="text-slate-500 text-xs font-medium pt-1">
-                            Ngày tạo: {userProfile?.createdAt || ""}
+                            {/* Ngày tạo: {userProfile?.createdAt || ""} */}
                         </p>
                     </div>
 

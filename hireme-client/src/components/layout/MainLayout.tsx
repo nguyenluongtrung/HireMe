@@ -4,7 +4,6 @@ import { useContext } from "react";
 
 import { cn } from "@/lib/utils";
 
-import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 
 import { GlobalStateContext } from "@/providers/GlobalStateProvider";

@@ -144,7 +144,7 @@ export const CVEnhancer = () => {
             <div>
               <h4 className="text-base font-semibold text-white mb-1">Passive Voice Detected</h4>
               <p className="text-sm text-slate-400 leading-relaxed">
-                In "Project Manager" role: "Was responsible for leading the team" is passive. Use strong action verbs.
+                In &quot;Project Manager&quot; role: &quot;Was responsible for leading the team&quot; is passive. Use strong action verbs.
               </p>
             </div>
 
@@ -171,7 +171,7 @@ export const CVEnhancer = () => {
           <div className="space-y-1 flex-1">
             <h4 className="text-base font-semibold text-white mb-1">Strong Technical Keywords</h4>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Great job including "Python", "React", and "Data Analysis". These match 90% of job descriptions in your target role.
+              Great job including &quot;Python&quot;, &quot;React&quot;, and &quot;Data Analysis&quot;. These match 90% of job descriptions in your target role.
             </p>
           </div>
         </div>
