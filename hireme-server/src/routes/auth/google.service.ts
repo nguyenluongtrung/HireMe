@@ -21,65 +21,43 @@ export class GoogleService {
     private readonly sharedRoleRepository: SharedRoleRepository,
     private readonly authService: AuthService,
   ) {
-    this.oauth2Client = new google.auth.OAuth2(
-      envConfig.GOOGLE_CLIENT_ID,
-      envConfig.GOOGLE_CLIENT_SECRET,
-      envConfig.GOOGLE_REDIRECT_URI,
-    )
+    this.oauth2Client = new google.auth.OAuth2(envConfig.GOOGLE_CLIENT_ID, envConfig.GOOGLE_CLIENT_SECRET)
   }
 
-  getAuthorizationUrl() {
-    const scope = ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"]
-    const url = this.oauth2Client.generateAuthUrl({
-      access_type: "offline",
-      scope,
-      include_granted_scopes: true,
+  async loginWithGoogleIdToken(idToken: string) {
+    // 1. Use idToken to verify
+    const ticket = await this.oauth2Client.verifyIdToken({
+      idToken,
+      audience: envConfig.GOOGLE_CLIENT_ID,
     })
-    return { url }
-  }
 
-  async googleCallback({ code }: { code: string }) {
-    try {
-      // 2. Dùng code để lấy token
-      const { tokens } = await this.oauth2Client.getToken(code)
-      this.oauth2Client.setCredentials(tokens)
-
-      // 3. Lấy thông tin google user
-      const oauth2 = google.oauth2({
-        auth: this.oauth2Client,
-        version: "v2",
-      })
-      const { data } = await oauth2.userinfo.get()
-      if (!data.email) {
-        throw GoogleUserInfoError
-      }
-
-      let user = await this.authRepository.findUniqueUserIncludeRole({
-        email: data.email,
-      })
-      // Nếu không có user tức là người mới, vậy nên sẽ tiến hành đăng ký
-      if (!user) {
-        const clientRoleId = await this.sharedRoleRepository.getUserRoleId()
-        const randomPassword = uuidv4()
-        const hashedPassword = await this.hashingService.hash(randomPassword)
-        user = await this.authRepository.createUserIncludeRole({
-          email: data.email,
-          name: data.name ?? "",
-          password: hashedPassword,
-          roleId: clientRoleId,
-          phoneNumber: "",
-          avatarUrl: data.picture ?? null,
-        })
-      }
-      const authTokens = await this.authService.generateTokens({
-        userId: user.id,
-        roleId: user.roleId,
-        roleName: user.role.name,
-      })
-      return authTokens
-    } catch (error) {
-      console.error("Error in googleCallback", error)
-      throw error
+    const payload = ticket.getPayload()
+    if (!payload?.email) {
+      throw GoogleUserInfoError
     }
+
+    let user = await this.authRepository.findUniqueUserIncludeRole({
+      email: payload.email,
+    })
+    // If no user, create one
+    if (!user) {
+      const clientRoleId = await this.sharedRoleRepository.getUserRoleId()
+      const randomPassword = uuidv4()
+      const hashedPassword = await this.hashingService.hash(randomPassword)
+      user = await this.authRepository.createUserIncludeRole({
+        email: payload.email,
+        name: payload.name ?? "",
+        password: hashedPassword,
+        roleId: clientRoleId,
+        phoneNumber: "",
+        avatarUrl: payload.picture ?? null,
+      })
+    }
+    const authTokens = await this.authService.generateTokens({
+      userId: user.id,
+      roleId: user.roleId,
+      roleName: user.role.name,
+    })
+    return authTokens
   }
 }

@@ -25,8 +25,6 @@ const configSchema = z.object({
   S3_BUCKET_NAME: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  GOOGLE_REDIRECT_URI: z.string(),
-  GOOGLE_CLIENT_REDIRECT_URI: z.string(),
 })
 
 const configServer = configSchema.safeParse(process.env)

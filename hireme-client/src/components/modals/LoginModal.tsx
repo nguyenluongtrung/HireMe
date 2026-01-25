@@ -1,5 +1,6 @@
 import { MdOutlineLogin } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
+import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -76,10 +77,9 @@ export function LoginModal({
                       <Input
                         id="email"
                         placeholder="Nhập email của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${
-                          errors.email &&
+                        className={`w-full focus:border-primary focus:ring-primary ${errors.email &&
                           "border-error focus:border-error focus:ring-error"
-                        }`}
+                          }`}
                         type="email"
                         {...field}
                       />
@@ -99,10 +99,9 @@ export function LoginModal({
                       <Input
                         id="password"
                         placeholder="Nhập mật khẩu của bạn"
-                        className={`w-full focus:border-primary focus:ring-primary ${
-                          errors.password &&
+                        className={`w-full focus:border-primary focus:ring-primary ${errors.password &&
                           "border-error focus:border-error focus:ring-error"
-                        }`}
+                          }`}
                         type="password"
                         {...field}
                       />
@@ -131,6 +130,7 @@ export function LoginModal({
                 type="button"
                 variant="outline"
                 className="flex gap-2 items-center"
+                onClick={() => signIn("google")}
               >
                 <FcGoogle className="w-5 h-5" />
                 <p className="text-sm hover:cursor-pointer">
