@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Tag as TagIcon } from "lucide-react";
+import { Tag as TagIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
