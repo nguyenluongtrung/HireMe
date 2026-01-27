@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from "react";
 import { ChevronDown, LayoutGrid, List, Search } from "lucide-react"
 

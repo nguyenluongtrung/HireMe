@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 import { StatsOverview } from "@/components/features/job-tracker/StatsOverview";
 import { TrackerFilters } from "@/components/features/job-tracker/TrackerFilters";
@@ -23,9 +23,15 @@ export default function JobTrackerPage() {
                 </p>
             </div>
 
-            <StatsOverview />
-            <TrackerFilters date={date} setSearchInput={setSearchInput} setDate={setDate} />
-            <ApplicationsTable searchDebounce={searchDebounce} date={date} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <StatsOverview />
+            </Suspense>
+            <Suspense fallback={<div>Loading...</div>}>
+                <TrackerFilters date={date} setSearchInput={setSearchInput} setDate={setDate} />
+            </Suspense>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ApplicationsTable searchDebounce={searchDebounce} date={date} />
+            </Suspense>
         </div>
     );
 }

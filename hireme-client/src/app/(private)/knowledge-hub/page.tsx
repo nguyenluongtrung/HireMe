@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 import { Sidebar } from "@/components/features/knowledge-hub/Sidebar";
 import { NoteEditor } from "@/components/features/knowledge-hub/NoteEditor";
@@ -21,7 +21,9 @@ export default function KnowledgeHubPage() {
 
             {/* Main Content */}
             <div className="flex-1 overflow-auto">
-                <NoteEditor noteId={selectedNoteId} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <NoteEditor noteId={selectedNoteId} />
+                </Suspense>
             </div>
         </div>
     );

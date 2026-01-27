@@ -1,6 +1,4 @@
-"use client";
-
-import React from "react";
+import React, { Suspense } from "react";
 import {
   Plus,
 } from "lucide-react";
@@ -28,14 +26,19 @@ export default function CVHistoryPage() {
       </div>
 
       {/* Stats Cards */}
-      <StatsCards />
+      <Suspense fallback={<div>Loading...</div>}>
+        <StatsCards />
+      </Suspense>
 
       {/* Filter Bar */}
-      <FilterBar />
+      <Suspense fallback={<div>Loading...</div>}>
+        <FilterBar />
+      </Suspense>
 
       {/* Grid Content */}
-      <ResumeCards />
-
+      <Suspense fallback={<div>Loading...</div>}>
+        <ResumeCards />
+      </Suspense>
     </div>
   );
 }

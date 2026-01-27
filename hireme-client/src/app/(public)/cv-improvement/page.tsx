@@ -1,5 +1,3 @@
-"use client";
-
 import {
   History,
   FileText,
@@ -8,6 +6,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CVUploader } from "@/components/features/cv-improvement/CVUploader";
 import { CVEnhancer } from "@/components/features/cv-improvement/CVEnhancer";
+import { Suspense } from "react";
 
 export default function CVImprovement() {
   return (
@@ -36,10 +35,14 @@ export default function CVImprovement() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
         {/* Left Column: Preview & Upload (4 cols) */}
-        <CVUploader />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CVUploader />
+        </Suspense>
 
         {/* Right Column: Analysis & Feedback (8 cols) */}
-        <CVEnhancer />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CVEnhancer />
+        </Suspense>
       </div>
     </div>
   );
