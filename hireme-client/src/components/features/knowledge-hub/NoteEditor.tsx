@@ -3,9 +3,12 @@
 import { useState } from "react";
 
 import { NoteHeader } from "./NoteHeader";
-import { AIInsightCard } from "./AIInsightCard";
 import { TipTapEditor } from "./TipTapEditor";
 import { Button } from "@/components/ui/button";
+
+import useKnowledgeItemForm from "@/hooks/knowledge-hub/useKnowledgeItemForm";
+
+import { KnowledgeItemType } from "@/contants/enums";
 
 interface NoteEditorProps {
     noteId: string | null;
@@ -26,14 +29,6 @@ const mockNotes: Record<string, any> = {
 <li>Mention the competing offer from a mid-size startup to emphasize market demand.</li>
 <li>Ask about equity vesting schedule acceleration and potential for performance-based bonuses.</li>
 </ul>`,
-        sections: [
-            {
-                title: "AI Insight: Market Rate Analysis",
-                type: "ai-insight",
-                content:
-                    "Based on your experience level and the location (San Francisco), the market rate is typically 15-20% higher than their initial offer range.",
-            },
-        ],
     },
 };
 
@@ -41,6 +36,8 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
     const [mode, setMode] = useState<"edit" | "preview">("edit");
     const [editorContent, setEditorContent] = useState("");
     const [hasChanges, setHasChanges] = useState(false);
+
+    const { handleCreateKnowledgeItem, handleUpdateKnowledgeItem } = useKnowledgeItemForm();
 
     if (!noteId) {
         return (
@@ -74,8 +71,11 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
     }
 
     const handleSave = () => {
-        // TODO: Implement save logic
-        console.log("Saving content:", editorContent);
+        if (mode == "edit") {
+            handleUpdateKnowledgeItem(note.id, { content: editorContent });
+        } else {
+            handleCreateKnowledgeItem({ content: editorContent, title: note.title, type: KnowledgeItemType.FILE });
+        }
         setHasChanges(false);
     };
 
@@ -152,22 +152,6 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
                                     className="text-slate-300 leading-relaxed mb-6"
                                     dangerouslySetInnerHTML={{ __html: editorContent }}
                                 />
-
-                                {/* AI Insight Section */}
-                                {note.sections?.map((section: any, index: number) => {
-                                    if (section.type === "ai-insight") {
-                                        return (
-                                            <AIInsightCard
-                                                key={index}
-                                                title={section.title}
-                                                content={section.content}
-                                                actionLabel="Apply Suggestion"
-                                            />
-                                        );
-                                    }
-
-                                    return null;
-                                })}
                             </div>
                         </>
                     )}

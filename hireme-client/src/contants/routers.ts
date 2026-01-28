@@ -4,7 +4,7 @@ import {
   Briefcase,
   Settings,
   Bot,
-  Book
+  Book,
 } from "lucide-react";
 
 export const pageRouters = {
@@ -79,5 +79,7 @@ export const apiEndpoints = {
     APPLICATIONS: "/applications",
     APPICATION_DETAIL: (id: number) => `/applications/${id}`,
     APPLICATION_STATISTICS: "/applications/statistics",
+    KNOWLEDGE_HUB_ITEMS: "/knowledge-hub/items",
+    KNOWLEDGE_HUB_ITEM_DETAIL: (id: number) => `/knowledge-hub/items/${id}`,
   },
 };

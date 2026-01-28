@@ -31,3 +31,8 @@ export enum ApplicationStatus {
   ACCEPTED = "ACCEPTED",
   REJECTED = "REJECTED",
 }
+
+export enum KnowledgeItemType {
+  FILE = "FILE",
+  FOLDER = "FOLDER",
+}
