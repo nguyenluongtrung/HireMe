@@ -1,9 +1,7 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Bot,
@@ -19,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { ForgotPasswordModal } from "@/components/modals/ForgotPasswordModal";
 import { RegisterModal } from "@/components/modals/RegisterModal";
+import SidebarMenuItem from "./SidebarMenuItem";
 
 import { cn } from "@/lib/utils";
 
@@ -31,7 +30,6 @@ type Props = {
 };
 
 const Sidebar = ({ className }: Props) => {
-  const pathname = usePathname();
   const { data: session } = useSession();
   const { handleSignOut } = useLogout();
   const { isSidebarCollapsed, setIsSidebarCollapsed } = useContext(GlobalStateContext);
@@ -39,6 +37,8 @@ const Sidebar = ({ className }: Props) => {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
+
+  const menu = useMemo(() => MAIN_MENU, []);
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -84,30 +84,13 @@ const Sidebar = ({ className }: Props) => {
 
         {/* Navigation */}
         <nav className={cn("flex-1 px-3 space-y-1", isSidebarCollapsed && "mt-4")}>
-          {MAIN_MENU.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-slate-800",
-                  isActive ? "bg-slate-800 text-blue-400" : "text-slate-400",
-                  isSidebarCollapsed && "justify-center px-0"
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    "h-5 w-5 shrink-0 transition-colors",
-                    isActive
-                      ? "text-blue-500"
-                      : "text-slate-500 group-hover:text-slate-300"
-                  )}
-                />
-                {!isSidebarCollapsed && <span>{item.name}</span>}
-              </Link>
-            );
-          })}
+          {menu.map((item) => (
+            <SidebarMenuItem
+              key={item.href}
+              item={item}
+              collapsed={isSidebarCollapsed}
+            />
+          ))}
         </nav>
 
         {/* Bottom Section */}
