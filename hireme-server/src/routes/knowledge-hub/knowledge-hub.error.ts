@@ -6,3 +6,10 @@ export const KnowledgeItemAlreadyExistsException = new UnprocessableEntityExcept
     path: "name",
   },
 ])
+
+export const KnowledgeResourceAlreadyExistsException = new UnprocessableEntityException([
+  {
+    message: "Error.KnowledgeResourceAlreadyExists",
+    path: "name",
+  },
+])

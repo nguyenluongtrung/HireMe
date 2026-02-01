@@ -11,6 +11,8 @@ import {
   GetKnowledgeItemsResDTO,
   UpsertKnowledgeItemBodyDTO,
   UpsertKnowledgeItemResDTO,
+  UpsertKnowledgeResourceBodyDTO,
+  UpsertKnowledgeResourceResDTO,
 } from "./knowledge-hub.dto"
 import { slugify } from "src/shared/helpers"
 
@@ -43,6 +45,35 @@ export class KnowledgeHubController {
         userId,
         slug: slugify(body.title),
       },
+    })
+  }
+
+  @Post("/resources")
+  @ZodResponse({ type: UpsertKnowledgeResourceResDTO })
+  createResource(@Body() body: UpsertKnowledgeResourceBodyDTO, @ActiveUser("userId") userId: number) {
+    return this.knowledgeHubService.createResource({
+      data: {
+        ...body,
+        userId,
+        slug: slugify(body.title),
+      },
+    })
+  }
+
+  @Patch("/resources/:resourceId")
+  @ZodResponse({ type: UpsertKnowledgeResourceResDTO })
+  updateResource(
+    @Body() body: UpsertKnowledgeResourceBodyDTO,
+    @ActiveUser("userId") userId: number,
+    @Param("resourceId") resourceId: string,
+  ) {
+    return this.knowledgeHubService.updateResource({
+      data: {
+        ...body,
+        userId,
+        slug: slugify(body.title),
+      },
+      id: Number(resourceId),
     })
   }
 

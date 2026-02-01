@@ -4,8 +4,12 @@ import { NotFoundRecordException } from "src/shared/error"
 import { isNotFoundPrismaError, isUniqueConstraintPrismaError } from "src/shared/helpers"
 
 import { KnowledgeHubRepo } from "./knowledge-hub.repo"
-import { GetKnowledgeItemsQueryType, UpsertKnowledgeItemBodyType } from "./knowledge-hub.model"
-import { KnowledgeItemAlreadyExistsException } from "./knowledge-hub.error"
+import {
+  GetKnowledgeItemsQueryType,
+  UpsertKnowledgeItemBodyType,
+  UpsertKnowledgeResourceBodyType,
+} from "./knowledge-hub.model"
+import { KnowledgeItemAlreadyExistsException, KnowledgeResourceAlreadyExistsException } from "./knowledge-hub.error"
 
 @Injectable()
 export class KnowledgeHubService {
@@ -33,6 +37,39 @@ export class KnowledgeHubService {
     } catch (error) {
       if (isUniqueConstraintPrismaError(error)) {
         throw KnowledgeItemAlreadyExistsException
+      }
+      throw error
+    }
+  }
+
+  async createResource({ data }: { data: UpsertKnowledgeResourceBodyType }) {
+    try {
+      const knowledgeResource = await this.knowledgeHubRepo.createResource({
+        data,
+      })
+      return knowledgeResource
+    } catch (error) {
+      if (isUniqueConstraintPrismaError(error)) {
+        throw KnowledgeResourceAlreadyExistsException
+      }
+      throw error
+    }
+  }
+
+  async updateResource({ id, data }: { id: number; data: UpsertKnowledgeResourceBodyType }) {
+    try {
+      const knowledgeResource = await this.knowledgeHubRepo.updateResource({
+        id,
+        data,
+      })
+
+      return knowledgeResource
+    } catch (error) {
+      if (isNotFoundPrismaError(error)) {
+        throw NotFoundRecordException
+      }
+      if (isUniqueConstraintPrismaError(error)) {
+        throw KnowledgeResourceAlreadyExistsException
       }
       throw error
     }
