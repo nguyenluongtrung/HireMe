@@ -6,9 +6,10 @@ import { MessageResDTO } from "src/shared/dtos/response.dto"
 
 import { KnowledgeHubService } from "./knowledge-hub.service"
 import {
-  GetKnowledgeItemDetailResDTO,
   GetKnowledgeItemsQueryDTO,
   GetKnowledgeItemsResDTO,
+  GetKnowledgeResourcesQueryDTO,
+  GetKnowledgeResourcesResDTO,
   UpsertKnowledgeItemBodyDTO,
   UpsertKnowledgeItemResDTO,
   UpsertKnowledgeResourceBodyDTO,
@@ -24,6 +25,16 @@ export class KnowledgeHubController {
   @ZodResponse({ type: GetKnowledgeItemsResDTO })
   list(@Query() query: GetKnowledgeItemsQueryDTO, @ActiveUser("userId") userId: number) {
     return this.knowledgeHubService.list({
+      page: query.page,
+      limit: query.limit,
+      userId,
+    })
+  }
+
+  @Get("/resources")
+  @ZodResponse({ type: GetKnowledgeResourcesResDTO })
+  listResource(@Query() query: GetKnowledgeResourcesQueryDTO, @ActiveUser("userId") userId: number) {
+    return this.knowledgeHubService.listResource({
       page: query.page,
       limit: query.limit,
       userId,
@@ -87,6 +98,13 @@ export class KnowledgeHubController {
       },
       id: Number(itemId),
     })
+  }
+
+  @Delete("/resources/:resourceId")
+  @ZodResponse({ type: MessageResDTO })
+  deleteResource(@Param("resourceId") resourceId: string) {
+    console.log(resourceId)
+    return this.knowledgeHubService.deleteResource(Number(resourceId))
   }
 
   @Delete(":itemId")

@@ -6,6 +6,7 @@ import { isNotFoundPrismaError, isUniqueConstraintPrismaError } from "src/shared
 import { KnowledgeHubRepo } from "./knowledge-hub.repo"
 import {
   GetKnowledgeItemsQueryType,
+  GetKnowledgeResourcesQueryType,
   UpsertKnowledgeItemBodyType,
   UpsertKnowledgeResourceBodyType,
 } from "./knowledge-hub.model"
@@ -17,6 +18,11 @@ export class KnowledgeHubService {
 
   async list(pagination: GetKnowledgeItemsQueryType) {
     const data = await this.knowledgeHubRepo.list(pagination)
+    return data
+  }
+
+  async listResource(pagination: GetKnowledgeResourcesQueryType) {
+    const data = await this.knowledgeHubRepo.listResource(pagination)
     return data
   }
 
@@ -97,6 +103,20 @@ export class KnowledgeHubService {
   async delete(id: number) {
     try {
       await this.knowledgeHubRepo.delete(id)
+      return {
+        message: "Delete successfully",
+      }
+    } catch (error) {
+      if (isNotFoundPrismaError(error)) {
+        throw NotFoundRecordException
+      }
+      throw error
+    }
+  }
+
+  async deleteResource(id: number) {
+    try {
+      await this.knowledgeHubRepo.deleteResource(id)
       return {
         message: "Delete successfully",
       }

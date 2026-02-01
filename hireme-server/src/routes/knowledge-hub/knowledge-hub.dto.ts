@@ -7,11 +7,17 @@ import {
   GetKnowledgeItemsQuerySchema,
   UpsertKnowledgeResourceBodySchema,
   UpsertKnowledgeResourceResSchema,
+  GetKnowledgeResourcesQuerySchema,
+  GetKnowledgeResourcesResSchema,
 } from "./knowledge-hub.model"
 
 export class GetKnowledgeItemsResDTO extends createZodDto(GetKnowledgeItemsResSchema) {}
 
+export class GetKnowledgeResourcesResDTO extends createZodDto(GetKnowledgeResourcesResSchema) {}
+
 export class GetKnowledgeItemsQueryDTO extends createZodDto(GetKnowledgeItemsQuerySchema) {}
+
+export class GetKnowledgeResourcesQueryDTO extends createZodDto(GetKnowledgeResourcesQuerySchema) {}
 
 export class GetKnowledgeItemDetailResDTO extends createZodDto(KnowledgeItemSchema) {}
 
