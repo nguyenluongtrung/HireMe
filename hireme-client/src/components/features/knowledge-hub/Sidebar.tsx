@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder, StickyNote } from "lucide-react";
+import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { CreateFolderModal } from "../../modals/CreateFolderModal";
 
 import { cn } from "@/lib/utils";
+
+import useKnowledgeResourceForm from "@/hooks/knowledge-hub/useKnowledgeResourceForm";
+import useKnowledgeResourceList from "@/hooks/knowledge-hub/useKnowledgeResourceList";
+
+import { KnowledgeItemType } from "@/contants/enums";
 
 interface Note {
     id: string;
@@ -12,13 +18,6 @@ interface Note {
     preview: string;
     tags?: string[];
     createdAt: string;
-}
-
-interface FolderItem {
-    id: string;
-    name: string;
-    count: number;
-    icon?: any;
 }
 
 interface SidebarProps {
@@ -31,14 +30,19 @@ interface SidebarProps {
 export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["all"]));
+    const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
 
-    // Mock data - replace with actual data from API
-    const folders: FolderItem[] = [
-        { id: "all", name: "All Notes", count: 12, icon: StickyNote },
-        { id: "interview", name: "Interview Prep", count: 4, icon: Folder },
-        { id: "company", name: "Company Research", count: 3, icon: Folder },
-        { id: "career", name: "Career Strategy", count: 2, icon: Folder },
-    ];
+    const { data: knowledgeResources } = useKnowledgeResourceList({
+        page: 1,
+        limit: 10,
+        searchDebounce: searchQuery,
+    });
+
+    const { handleCreateKnowledgeResource } = useKnowledgeResourceForm();
+
+    const handleCreateFolder = (folderName: string) => {
+        handleCreateKnowledgeResource({ title: folderName, type: KnowledgeItemType.FOLDER });
+    };
 
     const recentNotes: Note[] = [
         {
@@ -86,29 +90,31 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                 <div className="relative mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                     <Input
-                        placeholder="Search notes..."
+                        placeholder="Tìm kiếm ghi chú..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9 bg-[#0B1120] border-slate-700/50 text-white placeholder:text-slate-500 focus-visible:ring-blue-500 h-9"
                     />
                 </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white h-9 gap-2 shadow-lg shadow-blue-900/20">
+                <Button
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white h-9 gap-2 shadow-lg shadow-blue-900/20"
+                    onClick={() => setIsCreateFolderModalOpen(true)}
+                >
                     <FolderPlus className="h-4 w-4" />
-                    New Folder
+                    Tạo thư mục
                 </Button>
             </div>
 
             {/* Folders */}
             <div className="flex-1 overflow-y-auto">
                 <div className="p-2">
-                    {folders.map((folder) => {
-                        const isExpanded = expandedFolders.has(folder.id);
-                        const Icon = folder.icon;
+                    {knowledgeResources?.data.length ? knowledgeResources?.data?.map((resource) => {
+                        const isExpanded = expandedFolders.has(String(resource.id));
 
                         return (
-                            <div key={folder.id} className="mb-1">
+                            <div key={resource.id} className="mb-1">
                                 <button
-                                    onClick={() => toggleFolder(folder.id)}
+                                    onClick={() => toggleFolder(String(resource.id))}
                                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800/50 transition-colors text-slate-300 hover:text-white group"
                                 >
                                     {isExpanded ? (
@@ -116,15 +122,15 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                     ) : (
                                         <ChevronRight className="h-4 w-4 text-slate-500" />
                                     )}
-                                    <Icon className="h-4 w-4 text-blue-400" />
-                                    <span className="flex-1 text-left text-sm font-medium">{folder.name}</span>
+                                    <Folder className="h-4 w-4 text-blue-400" />
+                                    <span className="flex-1 text-left text-sm font-medium">{resource.title}</span>
                                     <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full">
-                                        {folder.count}
+                                        {/* {resource.childrenCount} */}
                                     </span>
                                 </button>
 
-                                {/* Notes under folder */}
-                                {isExpanded && folder.id === "all" && (
+                                {/* Notes under resource */}
+                                {isExpanded && String(resource.id) === "all" && (
                                     <div className="ml-6 mt-1 space-y-1">
                                         <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
                                             Recent Notes
@@ -178,9 +184,17 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                 )}
                             </div>
                         );
-                    })}
+                    }) : <div>
+                        <p className="px-3 py-2 text-sm text-slate-500 text-center">Không có thư mục</p>
+                    </div>}
                 </div>
             </div>
+
+            <CreateFolderModal
+                isOpen={isCreateFolderModalOpen}
+                onClose={() => setIsCreateFolderModalOpen(false)}
+                onConfirm={handleCreateFolder}
+            />
         </div>
     );
 };

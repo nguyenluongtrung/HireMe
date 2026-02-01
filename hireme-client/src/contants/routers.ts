@@ -80,6 +80,9 @@ export const apiEndpoints = {
     APPICATION_DETAIL: (id: number) => `/applications/${id}`,
     APPLICATION_STATISTICS: "/applications/statistics",
     KNOWLEDGE_HUB_ITEMS: "/knowledge-hub/items",
+    KNOWLEDGE_HUB_RESOURCES: "/knowledge-hub/items/resources",
     KNOWLEDGE_HUB_ITEM_DETAIL: (id: number) => `/knowledge-hub/items/${id}`,
+    KNOWLEDGE_HUB_RESOURCE_DETAIL: (id: number) =>
+      `/knowledge-hub/items/resources/${id}`,
   },
 };

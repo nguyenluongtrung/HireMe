@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+
 import { apiEndpoints } from "@/contants/routers";
 
 import { Application } from "@/interfaces/application";
@@ -35,7 +36,6 @@ export const getApplications = (params?: {
   return api.get(endPoint);
 };
 
-
 export const getApplicationDetail = (id: number) => {
   return api.get(apiEndpoints.SYSTEM.APPICATION_DETAIL(id));
 };
@@ -55,4 +55,3 @@ export const updateApplication = (id: number, data: Partial<Application>) => {
 export const createApplication = (data: Partial<Application>) => {
   return api.post(apiEndpoints.SYSTEM.APPLICATIONS, data);
 };
-
