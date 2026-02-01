@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Calendar, Tag, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { TagModal } from "./TagModal";
+import { TagModal } from "@/components/modals/TagModal";
 
 interface NoteHeaderProps {
     title: string;
