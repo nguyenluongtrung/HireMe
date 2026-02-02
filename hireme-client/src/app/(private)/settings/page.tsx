@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import useUserProfile from "@/hooks/auth/me/useUserProfile";
-import { Suspense } from "react";
 
 export default function SettingsPage() {
     const { profile: userProfile } = useUserProfile();
