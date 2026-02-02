@@ -11,7 +11,7 @@ import useKnowledgeItemForm from "@/hooks/knowledge-hub/useKnowledgeItemForm";
 import { KnowledgeItemType } from "@/contants/enums";
 
 interface NoteEditorProps {
-    noteId: string | null;
+    noteId: number | null;
 }
 
 // Mock note data - replace with actual API call
