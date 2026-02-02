@@ -17,9 +17,8 @@ export const KnowledgeResourceSchema = z.object({
   title: z.string().max(500),
   slug: z.string().max(600),
   type: z.enum([KnowledgeItemType.FOLDER, KnowledgeItemType.FILE]).default(KnowledgeItemType.FOLDER),
-  order: z.number().default(0),
   userId: z.number(),
-  deletedAt: z.date().optional(),
+  deletedAt: z.date().nullable().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
@@ -27,14 +26,30 @@ export const KnowledgeResourceSchema = z.object({
 // Base Knowledge Item schema
 export const KnowledgeItemSchema = KnowledgeResourceSchema.extend({
   content: z.string().optional(),
-  parentId: z.number().optional(),
   isFavorite: z.boolean().default(false),
   isArchived: z.boolean().default(false),
+  knowledgeResourceId: z.number(),
 })
 
 export const GetKnowledgeItemsResSchema = PaginationResSchema(KnowledgeItemSchema)
 
+export const GetKnowledgeResourcesResSchema = PaginationResSchema(
+  KnowledgeResourceSchema.pick({
+    id: true,
+    title: true,
+    type: true,
+  })
+    .extend({
+      items: z.array(KnowledgeItemSchema),
+    })
+    .strict(),
+)
+
 export const GetKnowledgeItemsQuerySchema = PaginationQuerySchema.extend({
+  userId: z.coerce.number().optional(),
+})
+
+export const GetKnowledgeResourcesQuerySchema = PaginationQuerySchema.extend({
   userId: z.coerce.number().optional(),
 })
 
@@ -64,6 +79,10 @@ export type KnowledgeResource = z.infer<typeof KnowledgeResourceSchema>
 export type GetKnowledgeItemsResType = z.infer<typeof GetKnowledgeItemsResSchema>
 
 export type GetKnowledgeItemsQueryType = z.infer<typeof GetKnowledgeItemsQuerySchema>
+
+export type GetKnowledgeResourcesResType = z.infer<typeof GetKnowledgeResourcesResSchema>
+
+export type GetKnowledgeResourcesQueryType = z.infer<typeof GetKnowledgeResourcesQuerySchema>
 
 export type UpsertKnowledgeItemBodyType = z.infer<typeof UpsertKnowledgeItemBodySchema>
 

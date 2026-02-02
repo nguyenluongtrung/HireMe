@@ -17,25 +17,25 @@ model User {
   email       String  @unique
   name        String  @db.VarChar(500)
   password    String  @db.VarChar(500)
-  phoneNumber String?  @db.VarChar(50)
-  avatarUrl      String? @db.VarChar(1000)
+  phoneNumber String? @db.VarChar(50)
+  avatarUrl   String? @db.VarChar(1000)
 
-  status                      UserStatus            @default(INACTIVE)
-  roleId                      Int
-  role                        Role                  @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  refreshTokens               RefreshToken[]
-  createdPermissions          Permission[]          @relation("PermissionCreatedBy")
-  updatedPermissions          Permission[]          @relation("PermissionUpdatedBy")
-  deletedPermissions          Permission[]          @relation("PermissionDeletedBy")
-  createdRoles                Role[]                @relation("RoleCreatedBy")
-  updatedRoles                Role[]                @relation("RoleUpdatedBy")
-  deletedRoles                Role[]                @relation("RoleDeletedBy")
-  applications                Application[]
-  knowledgeItems              KnowledgeItem[]
-  knowledgeResources          KnowledgeResource[]
-  createdById  Int?
-  createdBy    User?  @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  createdUsers User[] @relation("CreatorUsers")
+  status             UserStatus          @default(INACTIVE)
+  roleId             Int
+  role               Role                @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  refreshTokens      RefreshToken[]
+  createdPermissions Permission[]        @relation("PermissionCreatedBy")
+  updatedPermissions Permission[]        @relation("PermissionUpdatedBy")
+  deletedPermissions Permission[]        @relation("PermissionDeletedBy")
+  createdRoles       Role[]              @relation("RoleCreatedBy")
+  updatedRoles       Role[]              @relation("RoleUpdatedBy")
+  deletedRoles       Role[]              @relation("RoleDeletedBy")
+  applications       Application[]
+  knowledgeItems     KnowledgeItem[]
+  knowledgeResources KnowledgeResource[]
+  createdById        Int?
+  createdBy          User?               @relation("CreatorUsers", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  createdUsers       User[]              @relation("CreatorUsers")
 
   updatedById  Int?
   updatedBy    User?  @relation("UpdatorUsers", fields: [updatedById], references: [id], onDelete: SetNull, onUpdate: NoAction)
@@ -107,16 +107,16 @@ model Role {
 }
 
 model Application {
-  id          Int          @id @default(autoincrement())
-  companyName String       @db.VarChar(500)
-  position    String       @default("")
-  notes       String       @default("")
+  id          Int               @id @default(autoincrement())
+  companyName String            @db.VarChar(500)
+  position    String            @default("")
+  notes       String            @default("")
   userId      Int
-  user        User         @relation(fields: [userId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
   status      ApplicationStatus @default(PENDING)
 
-  dateApplied DateTime     @default(now())
-  
+  dateApplied DateTime @default(now())
+
   deletedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -126,21 +126,21 @@ model Application {
 
 // Knowledge Hub Models
 model KnowledgeResource {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(500)
-  slug        String   @db.VarChar(600)
-  type        KnowledgeItemType @default(FILE)
-  
-  // Order within parent folder
-  order       Int      @default(0)
-  
+  id    Int               @id @default(autoincrement())
+  title String            @db.VarChar(500)
+  slug  String            @db.VarChar(600)
+  type  KnowledgeItemType @default(FILE)
+
   // User ownership
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  
-  deletedAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One resource has many items
+  items KnowledgeItem[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([userId])
   @@index([deletedAt])
@@ -148,52 +148,48 @@ model KnowledgeResource {
 }
 
 model KnowledgeItem {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(500)
-  slug        String   @db.VarChar(600)
-  type        KnowledgeItemType @default(FILE)
-  
-  // Content for files/notes (null for folders)
-  content     String?  @db.Text
-  
-  // Self-referential relationship for infinite nesting
-  parentId    Int?
-  parent      KnowledgeItem?  @relation("KnowledgeItemHierarchy", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  children    KnowledgeItem[] @relation("KnowledgeItemHierarchy")
-  
-  // Order within parent folder
-  order       Int      @default(0)
-  
+  id    Int               @id @default(autoincrement())
+  title String            @db.VarChar(500)
+  slug  String            @db.VarChar(600)
+  type  KnowledgeItemType @default(FILE)
+
+  // Content for files/notes
+  content String? @db.Text
+
+  // ---------- Resource relation ----------
+  knowledgeResourceId Int
+  knowledgeResource   KnowledgeResource @relation(fields: [knowledgeResourceId], references: [id], onDelete: Cascade)
+
   // User ownership
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  
-  // Tags relationship (one-to-many)
-  tags        KnowledgeTag[]
-  
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Tags
+  tags KnowledgeTag[]
+
   // Metadata
-  isFavorite  Boolean  @default(false)
-  isArchived  Boolean  @default(false)
-  
-  deletedAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isFavorite Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([userId])
-  @@index([parentId])
+  @@index([knowledgeResourceId])
   @@index([deletedAt])
   @@index([type])
 }
 
 model KnowledgeTag {
-  id              Int            @id @default(autoincrement())
-  name            String         @db.VarChar(100)
-  
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(100)
+
   // Belongs to one KnowledgeItem
   knowledgeItemId Int
-  knowledgeItem   KnowledgeItem  @relation(fields: [knowledgeItemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  
-  createdAt       DateTime       @default(now())
+  knowledgeItem   KnowledgeItem @relation(fields: [knowledgeItemId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime @default(now())
 
   @@index([knowledgeItemId])
 }
