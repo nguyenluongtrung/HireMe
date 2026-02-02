@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder, MoreHorizontal, FilePlus, Trash } from "lucide-react";
+import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder, MoreHorizontal, FilePlus, Trash, Pencil } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import useKnowledgeItemForm from "@/hooks/knowledge-hub/useKnowledgeItemForm";
 import useKnowledgeResourceList from "@/hooks/knowledge-hub/useKnowledgeResourceList";
 
 import { KnowledgeItemType } from "@/contants/enums";
+import { EditFolderModal } from "@/components/modals/EditFolderModal";
+
+import { KnowledgeResource } from "@/interfaces/knowledge-item";
 
 interface SidebarProps {
     selectedNoteId: number | null;
@@ -24,7 +27,10 @@ interface SidebarProps {
 export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["all"]));
+
     const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
+    const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
+    const [selectedFolder, setSelectedFolder] = useState<KnowledgeResource | null>(null);
 
     const { data: knowledgeResources } = useKnowledgeResourceList({
         page: 1,
@@ -32,7 +38,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
         searchDebounce: searchQuery,
     });
 
-    const { handleCreateKnowledgeResource, handleDeleteKnowledgeResource } = useKnowledgeResourceForm();
+    const { handleCreateKnowledgeResource, handleDeleteKnowledgeResource, handleUpdateKnowledgeResource } = useKnowledgeResourceForm();
     const { handleCreateKnowledgeItem } = useKnowledgeItemForm();
 
     const handleCreateFolder = (folderName: string) => {
@@ -140,6 +146,25 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
+                                                            setSelectedFolder(resource);
+                                                            setIsEditFolderModalOpen(true);
+                                                        }}
+                                                        className="flex items-center gap-3 p-2 hover:bg-slate-800 rounded-md transition-colors text-left group/delete hover:cursor-pointer"
+                                                    >
+                                                        <div className="bg-primary/10 p-1.5 rounded-lg group-hover/delete:bg-primary/20 transition-colors">
+                                                            <Pencil className="h-4 w-4 text-slate-200" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-medium text-sm text-primary">Cập nhật thư mục</div>
+                                                            <div className="text-[10px] text-slate-500">Cập nhật tên thư mục</div>
+                                                        </div>
+                                                    </button>
+
+                                                    <div className="h-[1px] bg-slate-800/50 my-0.5" />
+
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             handleDeleteKnowledgeResource(resource.id);
                                                         }}
                                                         className="flex items-center gap-3 p-2 hover:bg-red-500/10 rounded-md transition-colors text-left group/delete hover:cursor-pointer"
@@ -202,11 +227,28 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                 </div>
             </div>
 
-            <CreateFolderModal
-                isOpen={isCreateFolderModalOpen}
-                onClose={() => setIsCreateFolderModalOpen(false)}
-                onConfirm={handleCreateFolder}
-            />
+            {isCreateFolderModalOpen && (
+                <CreateFolderModal
+                    isOpen={isCreateFolderModalOpen}
+                    onClose={() => setIsCreateFolderModalOpen(false)}
+                    onConfirm={handleCreateFolder}
+                />
+            )}
+
+            {isEditFolderModalOpen && (
+                <EditFolderModal
+                    isOpen={isEditFolderModalOpen}
+                    onClose={() => setIsEditFolderModalOpen(false)}
+                    onConfirm={(folderName) => {
+                        if (selectedFolder) {
+                            handleUpdateKnowledgeResource(selectedFolder.id, {
+                                title: folderName,
+                            });
+                        }
+                    }}
+                    folderName={selectedFolder?.title || ""}
+                />
+            )}
         </div>
     );
 };

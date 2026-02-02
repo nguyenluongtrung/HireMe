@@ -96,7 +96,6 @@ const useKnowledgeResourceForm = () => {
     }
 
     const handleCreateKnowledgeResource = (data: Partial<KnowledgeResource>) => {
-        console.log(data)
         createKnowledgeResourceMutation.mutate(data);
     }
 
