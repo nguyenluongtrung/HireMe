@@ -5,6 +5,7 @@ export interface KnowledgeResource {
   title: string;
   slug: string;
   type: KnowledgeItemType;
+  items: KnowledgeItem[];
   deletedAt: Date | string | null;
   createdAt: Date | string | null;
   updatedAt: Date | string | null;
