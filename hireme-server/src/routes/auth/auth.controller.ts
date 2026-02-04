@@ -5,7 +5,6 @@ import { Response } from "express"
 import { Auth, IsPublic } from "src/shared/decorators/auth.decorator"
 import { ActiveUser } from "src/shared/decorators/active-user.decorator"
 import { AuthType } from "src/shared/constants/auth.constant"
-import envConfig from "src/shared/config"
 
 import { AuthService } from "./auth.service"
 import { GoogleService } from "./google.service"

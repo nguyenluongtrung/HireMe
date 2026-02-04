@@ -6,7 +6,6 @@ import { Injectable } from "@nestjs/common"
 
 import { HashingService } from "src/shared/services/hashing.service"
 import { SharedRoleRepository } from "src/shared/repositories/shared-role.repo"
-import envConfig from "src/shared/config"
 
 import { AuthRepository } from "./auth.repo"
 import { AuthService } from "./auth.service"
@@ -21,14 +20,14 @@ export class GoogleService {
     private readonly sharedRoleRepository: SharedRoleRepository,
     private readonly authService: AuthService,
   ) {
-    this.oauth2Client = new google.auth.OAuth2(envConfig.GOOGLE_CLIENT_ID, envConfig.GOOGLE_CLIENT_SECRET)
+    this.oauth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
   }
 
   async loginWithGoogleIdToken(idToken: string) {
     // 1. Use idToken to verify
     const ticket = await this.oauth2Client.verifyIdToken({
       idToken,
-      audience: envConfig.GOOGLE_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID,
     })
 
     const payload = ticket.getPayload()
