@@ -49,7 +49,7 @@ export default function SidebarClient({ session, className }: {
     const [openRegisterModal, setOpenRegisterModal] = useState(false);
     const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
 
-    const menu = useMemo(() => MAIN_MENU, []);
+    const menu = useMemo(() => MAIN_MENU.filter((item) => item.isPublic || session), [session]);
 
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
