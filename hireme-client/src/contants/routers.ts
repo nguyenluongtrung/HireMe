@@ -35,36 +35,43 @@ export const MAIN_MENU = [
     name: "Trang chủ",
     href: "/",
     icon: LayoutDashboard,
+    isPublic: true,
   },
   {
     name: "Cải thiện CV",
     href: "/cv-improvement",
     icon: FileText,
+    isPublic: false,
   },
   {
     name: "CV của tôi",
     href: "/cv-history",
     icon: FileText,
+    isPublic: false,
   },
   {
     name: "Theo dõi việc làm",
     href: "/job-tracker",
     icon: Briefcase,
+    isPublic: false,
   },
   {
     name: "Phân tích AI",
     href: "/ai-analysis",
     icon: Bot,
+    isPublic: false,
   },
   {
     name: "Kho kiến thức",
     href: "/knowledge-hub",
     icon: Book,
+    isPublic: false,
   },
   {
     name: "Cài đặt",
     href: "/settings",
     icon: Settings,
+    isPublic: false,
   },
 ];
 
