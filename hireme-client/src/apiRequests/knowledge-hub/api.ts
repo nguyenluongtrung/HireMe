@@ -46,6 +46,10 @@ export const getKnowledgeResources = (params?: {
   return api.get(endPoint);
 };
 
+export const getKnowledgeItem = (id: number) => {
+  return api.get(apiEndpoints.SYSTEM.KNOWLEDGE_HUB_ITEM_DETAIL(id));
+};
+
 export const createKnowledgeResource = (data: Partial<KnowledgeResource>) => {
   return api.post(apiEndpoints.SYSTEM.KNOWLEDGE_HUB_RESOURCES, data);
 };

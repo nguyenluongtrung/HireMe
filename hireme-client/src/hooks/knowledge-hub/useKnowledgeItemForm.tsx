@@ -1,17 +1,38 @@
 import { useContext } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { useToast } from "@/providers/ToastProvider";
 import { LoadingContext } from "@/providers/LoadingProvider";
+import { useSessionCache } from "@/providers/SessionCacheProvider";
 
 import { KnowledgeItem } from "@/interfaces/knowledge-item";
 
-import { createKnowledgeItem, deleteKnowledgeItem, updateKnowledgeItem } from "@/apiRequests/knowledge-hub/api";
+import { createKnowledgeItem, deleteKnowledgeItem, getKnowledgeItem, updateKnowledgeItem } from "@/apiRequests/knowledge-hub/api";
 
-const useKnowledgeItemForm = () => {
+const useKnowledgeItemForm = ({
+    knowledgeItemId,
+    onGettingDetailSuccess
+}: {
+    knowledgeItemId?: number
+    onGettingDetailSuccess?: (data: KnowledgeItem) => void
+}) => {
     const { showToast } = useToast();
     const { setIsLoading } = useContext(LoadingContext);
     const queryClient = useQueryClient();
+    const { data: session } = useSessionCache()
+
+    // Get knowledge item detail
+    const { data: knowledgeItem } = useQuery({
+        queryKey: ["knowledge-item", knowledgeItemId],
+        queryFn: () => getKnowledgeItem(Number(knowledgeItemId)),
+        enabled: !!knowledgeItemId && !!session?.accessToken,
+        retry: 3,
+        refetchOnMount: true,
+        refetchOnWindowFocus: false,
+        onSuccess: (data) => {
+            onGettingDetailSuccess?.(data.data)
+        }
+    })
 
     const deleteKnowledgeItemMutation = useMutation({
         mutationFn: async (id: number) => {
@@ -25,7 +46,7 @@ const useKnowledgeItemForm = () => {
                 variant: 'success',
             });
             queryClient.invalidateQueries({
-                queryKey: ["knowledge-items"],
+                queryKey: ["knowledge-resources"],
             })
         },
         onError: () => {
@@ -51,7 +72,7 @@ const useKnowledgeItemForm = () => {
                 variant: 'success',
             });
             queryClient.invalidateQueries({
-                queryKey: ["knowledge-items"],
+                queryKey: ["knowledge-resources"],
             })
         },
         onError: () => {
@@ -77,7 +98,7 @@ const useKnowledgeItemForm = () => {
                 variant: 'success',
             });
             queryClient.invalidateQueries({
-                queryKey: ["knowledge-items"],
+                queryKey: ["knowledge-resources"],
             })
         },
         onError: () => {
@@ -105,6 +126,7 @@ const useKnowledgeItemForm = () => {
     }
 
     return {
+        knowledgeItem: knowledgeItem,
         handleDeleteKnowledgeItem,
         handleCreateKnowledgeItem,
         handleUpdateKnowledgeItem

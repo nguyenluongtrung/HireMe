@@ -8,36 +8,23 @@ import { Button } from "@/components/ui/button";
 
 import useKnowledgeItemForm from "@/hooks/knowledge-hub/useKnowledgeItemForm";
 
-import { KnowledgeItemType } from "@/contants/enums";
+import { KnowledgeItem } from "@/interfaces/knowledge-item";
 
 interface NoteEditorProps {
     noteId: number | null;
 }
 
-// Mock note data - replace with actual API call
-const mockNotes: Record<string, any> = {
-    "1": {
-        title: "Salary Negotiation Tips",
-        createdDate: "Oct 24, 2023",
-        tags: ["negotiation"],
-        content: `<p>Preparing for the final round with <strong>TechCorp Inc</strong>. Need to be firm but polite about the base salary expectations.</p>`,
-        htmlContent: `<p>Preparing for the final round with <strong>TechCorp Inc</strong>. Need to be firm but polite about the base salary expectations.</p>
-
-<h2>Key Talking Points</h2>
-<ul>
-<li>Highlight the <strong style="color: #facc15">30% revenue growth</strong> achieved in the previous role.</li>
-<li>Mention the competing offer from a mid-size startup to emphasize market demand.</li>
-<li>Ask about equity vesting schedule acceleration and potential for performance-based bonuses.</li>
-</ul>`,
-    },
-};
-
 export const NoteEditor = ({ noteId }: NoteEditorProps) => {
     const [mode, setMode] = useState<"edit" | "preview">("edit");
-    const [editorContent, setEditorContent] = useState("");
+    const [knowledgeItem, setKnowledgeItem] = useState<KnowledgeItem>()
     const [hasChanges, setHasChanges] = useState(false);
 
-    const { handleCreateKnowledgeItem, handleUpdateKnowledgeItem } = useKnowledgeItemForm();
+    const { handleUpdateKnowledgeItem } = useKnowledgeItemForm({
+        knowledgeItemId: noteId || 0,
+        onGettingDetailSuccess: (data) => {
+            setKnowledgeItem(data)
+        }
+    });
 
     if (!noteId) {
         return (
@@ -51,9 +38,7 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
         );
     }
 
-    const note = mockNotes[noteId];
-
-    if (!note) {
+    if (!knowledgeItem) {
         return (
             <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -65,22 +50,16 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
         );
     }
 
-    // Initialize editor content if not set
-    if (!editorContent && note.htmlContent) {
-        setEditorContent(note.htmlContent);
-    }
-
     const handleSave = () => {
-        if (mode == "edit") {
-            handleUpdateKnowledgeItem(note.id, { content: editorContent });
-        } else {
-            handleCreateKnowledgeItem({ content: editorContent, title: note.title, type: KnowledgeItemType.FILE });
-        }
+        handleUpdateKnowledgeItem(knowledgeItem.id || 0, knowledgeItem);
         setHasChanges(false);
     };
 
     const handleEditorChange = (content: string) => {
-        setEditorContent(content);
+        setKnowledgeItem((prev) => ({
+            ...prev,
+            content
+        }))
         setHasChanges(true);
     };
 
@@ -127,18 +106,26 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
             <div className="flex-1 overflow-auto">
                 <div className="w-full mx-auto p-6">
                     {/* Header */}
-                    <NoteHeader title={note.title} createdDate={note.createdDate} tags={note.tags} />
-
-                    {/* Last edited timestamp */}
-                    <div className="text-sm text-slate-500 mb-6">
-                        Last edited: 2 mins ago
-                    </div>
+                    <NoteHeader
+                        key={knowledgeItem.id}
+                        title={knowledgeItem?.title || ''}
+                        createdDate={
+                            knowledgeItem?.createdAt
+                                ? new Date(knowledgeItem.createdAt).toLocaleDateString('en-GB')
+                                : ''
+                        }
+                        tags={knowledgeItem?.tags || []}
+                        mode={mode}
+                        setKnowledgeItem={setKnowledgeItem}
+                        setHasChanges={setHasChanges}
+                    />
 
                     {mode === "edit" ? (
                         <>
                             {/* TipTap Editor */}
                             <TipTapEditor
-                                content={editorContent}
+                                key={knowledgeItem.id}
+                                content={knowledgeItem?.content || ''}
                                 onChange={handleEditorChange}
                                 placeholder="Type '/' for commands or start typing..."
                             />
@@ -150,7 +137,7 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
                                 {/* Main content */}
                                 <div
                                     className="text-slate-300 leading-relaxed mb-6"
-                                    dangerouslySetInnerHTML={{ __html: editorContent }}
+                                    dangerouslySetInnerHTML={{ __html: knowledgeItem?.content || '' }}
                                 />
                             </div>
                         </>
