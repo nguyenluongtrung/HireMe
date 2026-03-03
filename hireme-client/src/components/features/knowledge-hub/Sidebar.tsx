@@ -39,7 +39,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
     });
 
     const { handleCreateKnowledgeResource, handleDeleteKnowledgeResource, handleUpdateKnowledgeResource } = useKnowledgeResourceForm();
-    const { handleCreateKnowledgeItem } = useKnowledgeItemForm();
+    const { handleCreateKnowledgeItem } = useKnowledgeItemForm({});
 
     const handleCreateFolder = (folderName: string) => {
         handleCreateKnowledgeResource({ title: folderName, type: KnowledgeItemType.FOLDER });
@@ -123,11 +123,11 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            handleCreateKnowledgeItem({ // Assuming this works or at least triggers logic
+                                                            handleCreateKnowledgeItem({
                                                                 title: "New Note",
                                                                 type: KnowledgeItemType.FILE,
-                                                                // @ts-expect-error - Assuming relation field or need to clarify
-                                                                knowledgeResourceId: resource.id
+                                                                content: "",
+                                                                knowledgeResourceId: Number(resource.id)
                                                             });
                                                         }}
                                                         className="flex items-center gap-3 p-2 hover:bg-slate-800 rounded-md transition-colors text-left hover:cursor-pointer"
@@ -186,10 +186,10 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                 {/* Notes under resource */}
                                 {isExpanded && (
                                     <div className="ml-6 mt-1 space-y-1">
-                                        {resource.items.map((item) => (
+                                        {resource?.items?.map((item) => (
                                             <button
                                                 key={item.id}
-                                                onClick={() => onSelectNote(item.id)}
+                                                onClick={() => onSelectNote(item?.id || 0)}
                                                 className={cn(
                                                     "w-full text-left px-3 py-2 rounded-lg transition-all duration-200 hover:cursor-pointer group",
                                                     selectedNoteId == item.id
