@@ -8,7 +8,9 @@ export const KnowledgeTagSchema = z.object({
   id: z.number(),
   name: z.string().max(100),
   knowledgeItemId: z.number(),
+  deletedAt: z.date().nullable().optional(),
   createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 // Knowledge Resource (folder / file) schema
@@ -29,6 +31,7 @@ export const KnowledgeItemSchema = KnowledgeResourceSchema.extend({
   isFavorite: z.boolean().default(false),
   isArchived: z.boolean().default(false),
   knowledgeResourceId: z.number(),
+  tags: z.array(KnowledgeTagSchema),
 })
 
 export const GetKnowledgeItemsResSchema = PaginationResSchema(KnowledgeItemSchema)
@@ -45,8 +48,14 @@ export const GetKnowledgeResourcesResSchema = PaginationResSchema(
     .strict(),
 )
 
+export const GetKnowledgeTagsResSchema = PaginationResSchema(KnowledgeTagSchema)
+
 export const GetKnowledgeItemsQuerySchema = PaginationQuerySchema.extend({
   userId: z.coerce.number().optional(),
+})
+
+export const GetKnowledgeTagsQuerySchema = PaginationQuerySchema.extend({
+  knowledgeItemId: z.coerce.number().optional(),
 })
 
 export const GetKnowledgeResourcesQuerySchema = PaginationQuerySchema.extend({
@@ -69,6 +78,14 @@ export const UpsertKnowledgeResourceResSchema = KnowledgeResourceSchema.omit({
   id: true,
 }).strict()
 
+export const UpsertKnowledgeTagBodySchema = KnowledgeTagSchema.omit({
+  id: true,
+}).strict()
+
+export const UpsertKnowledgeTagResSchema = KnowledgeTagSchema.omit({
+  id: true,
+}).strict()
+
 // Type exports
 export type KnowledgeTag = z.infer<typeof KnowledgeTagSchema>
 
@@ -84,6 +101,10 @@ export type GetKnowledgeResourcesResType = z.infer<typeof GetKnowledgeResourcesR
 
 export type GetKnowledgeResourcesQueryType = z.infer<typeof GetKnowledgeResourcesQuerySchema>
 
+export type GetKnowledgeTagsResType = z.infer<typeof GetKnowledgeTagsResSchema>
+
+export type GetKnowledgeTagsQueryType = z.infer<typeof GetKnowledgeTagsQuerySchema>
+
 export type UpsertKnowledgeItemBodyType = z.infer<typeof UpsertKnowledgeItemBodySchema>
 
 export type UpsertKnowledgeItemResType = z.infer<typeof UpsertKnowledgeItemResSchema>
@@ -91,3 +112,7 @@ export type UpsertKnowledgeItemResType = z.infer<typeof UpsertKnowledgeItemResSc
 export type UpsertKnowledgeResourceBodyType = z.infer<typeof UpsertKnowledgeResourceBodySchema>
 
 export type UpsertKnowledgeResourceResType = z.infer<typeof UpsertKnowledgeResourceResSchema>
+
+export type UpsertKnowledgeTagBodyType = z.infer<typeof UpsertKnowledgeTagBodySchema>
+
+export type UpsertKnowledgeTagResType = z.infer<typeof UpsertKnowledgeTagResSchema>

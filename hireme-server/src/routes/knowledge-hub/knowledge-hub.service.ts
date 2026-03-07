@@ -7,10 +7,16 @@ import { KnowledgeHubRepo } from "./knowledge-hub.repo"
 import {
   GetKnowledgeItemsQueryType,
   GetKnowledgeResourcesQueryType,
+  GetKnowledgeTagsQueryType,
   UpsertKnowledgeItemBodyType,
   UpsertKnowledgeResourceBodyType,
+  UpsertKnowledgeTagBodyType,
 } from "./knowledge-hub.model"
-import { KnowledgeItemAlreadyExistsException, KnowledgeResourceAlreadyExistsException } from "./knowledge-hub.error"
+import {
+  KnowledgeItemAlreadyExistsException,
+  KnowledgeResourceAlreadyExistsException,
+  KnowledgeTagAlreadyExistsException,
+} from "./knowledge-hub.error"
 
 @Injectable()
 export class KnowledgeHubService {
@@ -26,6 +32,11 @@ export class KnowledgeHubService {
     return data
   }
 
+  async listTag(pagination: GetKnowledgeTagsQueryType) {
+    const data = await this.knowledgeHubRepo.listTag(pagination)
+    return data
+  }
+
   async findById(id: number) {
     const knowledgeItem = await this.knowledgeHubRepo.findById(id)
     if (!knowledgeItem) {
@@ -34,7 +45,7 @@ export class KnowledgeHubService {
     return knowledgeItem
   }
 
-  async create({ data }: { data: UpsertKnowledgeItemBodyType }) {
+  async createKnowledgeItem({ data }: { data: UpsertKnowledgeItemBodyType }) {
     try {
       const knowledgeItem = await this.knowledgeHubRepo.create({
         data,
@@ -62,6 +73,20 @@ export class KnowledgeHubService {
     }
   }
 
+  async createTag({ data }: { data: UpsertKnowledgeTagBodyType }) {
+    try {
+      const knowledgeTag = await this.knowledgeHubRepo.createTag({
+        data,
+      })
+      return knowledgeTag
+    } catch (error) {
+      if (isUniqueConstraintPrismaError(error)) {
+        throw KnowledgeTagAlreadyExistsException
+      }
+      throw error
+    }
+  }
+
   async updateResource({ id, data }: { id: number; data: UpsertKnowledgeResourceBodyType }) {
     try {
       const knowledgeResource = await this.knowledgeHubRepo.updateResource({
@@ -81,7 +106,7 @@ export class KnowledgeHubService {
     }
   }
 
-  async update({ id, data }: { id: number; data: UpsertKnowledgeItemBodyType }) {
+  async updateKnowledgeItem({ id, data }: { id: number; data: UpsertKnowledgeItemBodyType }) {
     try {
       const knowledgeItem = await this.knowledgeHubRepo.update({
         id,
@@ -100,7 +125,26 @@ export class KnowledgeHubService {
     }
   }
 
-  async delete(id: number) {
+  async updateTag({ id, data }: { id: number; data: UpsertKnowledgeTagBodyType }) {
+    try {
+      const knowledgeTag = await this.knowledgeHubRepo.updateTag({
+        id,
+        data,
+      })
+
+      return knowledgeTag
+    } catch (error) {
+      if (isNotFoundPrismaError(error)) {
+        throw NotFoundRecordException
+      }
+      if (isUniqueConstraintPrismaError(error)) {
+        throw KnowledgeTagAlreadyExistsException
+      }
+      throw error
+    }
+  }
+
+  async deleteKnowledgeItem(id: number) {
     try {
       await this.knowledgeHubRepo.delete(id)
       return {
@@ -117,6 +161,20 @@ export class KnowledgeHubService {
   async deleteResource(id: number) {
     try {
       await this.knowledgeHubRepo.deleteResource(id)
+      return {
+        message: "Delete successfully",
+      }
+    } catch (error) {
+      if (isNotFoundPrismaError(error)) {
+        throw NotFoundRecordException
+      }
+      throw error
+    }
+  }
+
+  async deleteTag(id: number) {
+    try {
+      await this.knowledgeHubRepo.deleteTag(id)
       return {
         message: "Delete successfully",
       }
