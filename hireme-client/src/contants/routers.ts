@@ -91,5 +91,7 @@ export const apiEndpoints = {
     KNOWLEDGE_HUB_ITEM_DETAIL: (id: number) => `/knowledge-hub/items/${id}`,
     KNOWLEDGE_HUB_RESOURCE_DETAIL: (id: number) =>
       `/knowledge-hub/items/resources/${id}`,
+    KNOWLEDGE_HUB_TAGS: "/knowledge-hub/items/tags",
+    KNOWLEDGE_HUB_TAG_DETAIL: (id: number) => `/knowledge-hub/items/tags/${id}`,
   },
 };

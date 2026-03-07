@@ -1,12 +1,14 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { Calendar, Tag, Plus } from "lucide-react";
+import { Calendar, Tag, Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { TagModal } from "@/components/modals/TagModal";
 import { Textarea } from "@/components/ui/textarea";
 import { KnowledgeItem, KnowledgeItemTag } from "@/interfaces/knowledge-item";
+import useKnowledgeTagForm from "@/hooks/knowledge-hub/useKnowledgeTagForm";
 
 interface NoteHeaderProps {
+    knowledgeItemId: number
     title: string;
     createdDate: string;
     tags?: KnowledgeItemTag[];
@@ -16,6 +18,7 @@ interface NoteHeaderProps {
 }
 
 export const NoteHeader = ({
+    knowledgeItemId,
     title,
     createdDate,
     tags,
@@ -24,6 +27,16 @@ export const NoteHeader = ({
     setHasChanges,
 }: NoteHeaderProps) => {
     const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+    const [selectedTag, setSelectedTag] = useState<KnowledgeItemTag | null>(null);
+
+    const { handleCreateKnowledgeTag, handleUpdateKnowledgeTag, handleDeleteKnowledgeTag } = useKnowledgeTagForm({
+        knowledgeItemId,
+        knowledgeTagId: selectedTag?.id || 0,
+        onCloseTagModal: () => {
+            setIsTagModalOpen(false);
+            setSelectedTag(null);
+        }
+    })
     return (
         <div className="border-b border-slate-800/50 pb-6 mb-6">
             {/* Title */}
@@ -73,9 +86,27 @@ export const NoteHeader = ({
                         {tags?.map((tag) => (
                             <span
                                 key={tag.id}
-                                className="text-sm bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full border border-blue-500/30 hover:bg-blue-600/30 transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-1 text-sm bg-blue-600/20 text-blue-400 pl-3 pr-1.5 py-1 max-w-[200px] rounded-full border border-blue-500/30 hover:bg-blue-600/30 transition-colors"
                             >
-                                {tag.title}
+                                <span
+                                    className="truncate cursor-pointer"
+                                    onClick={() => {
+                                        setSelectedTag(tag)
+                                        setIsTagModalOpen(true)
+                                    }}
+                                >
+                                    {tag.name}
+                                </span>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteKnowledgeTag(tag.id);
+                                    }}
+                                    className="flex-shrink-0 ml-0.5 rounded-full p-0.5 hover:bg-blue-500/30 hover:text-white transition-colors cursor-pointer"
+                                    aria-label={`Remove tag ${tag.name}`}
+                                >
+                                    <X className="h-3 w-3" />
+                                </button>
                             </span>
                         ))}
                         <Button
@@ -94,7 +125,14 @@ export const NoteHeader = ({
             {isTagModalOpen && (
                 <TagModal
                     isOpen={true}
-                    onSave={() => setIsTagModalOpen(false)}
+                    tagDetail={selectedTag}
+                    onSave={({ name }: { name: string }) => {
+                        if (selectedTag) {
+                            handleUpdateKnowledgeTag({ name, knowledgeItemId: selectedTag.id })
+                        } else {
+                            handleCreateKnowledgeTag({ name, knowledgeItemId })
+                        }
+                    }}
                     onClose={() => setIsTagModalOpen(false)}
                 />
             )}

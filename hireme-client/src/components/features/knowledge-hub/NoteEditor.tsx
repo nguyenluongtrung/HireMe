@@ -108,6 +108,7 @@ export const NoteEditor = ({ noteId }: NoteEditorProps) => {
                     {/* Header */}
                     <NoteHeader
                         key={knowledgeItem.id}
+                        knowledgeItemId={knowledgeItem?.id || 0}
                         title={knowledgeItem?.title || ''}
                         createdDate={
                             knowledgeItem?.createdAt
