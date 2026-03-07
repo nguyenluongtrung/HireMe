@@ -13,3 +13,10 @@ export const KnowledgeResourceAlreadyExistsException = new UnprocessableEntityEx
     path: "name",
   },
 ])
+
+export const KnowledgeTagAlreadyExistsException = new UnprocessableEntityException([
+  {
+    message: "Error.KnowledgeTagAlreadyExists",
+    path: "name",
+  },
+])

@@ -8,11 +8,15 @@ import {
   GetKnowledgeItemsResType,
   GetKnowledgeResourcesQueryType,
   GetKnowledgeResourcesResType,
+  GetKnowledgeTagsQueryType,
+  GetKnowledgeTagsResType,
   KnowledgeItem,
   KnowledgeResource,
   UpsertKnowledgeItemBodyType,
   UpsertKnowledgeResourceBodyType,
+  UpsertKnowledgeTagBodyType,
 } from "./knowledge-hub.model"
+import { KnowledgeTag } from "generated/prisma"
 
 @Injectable()
 @SerializeAll()
@@ -83,6 +87,28 @@ export class KnowledgeHubRepo {
     }
   }
 
+  async listTag(pagination: GetKnowledgeTagsQueryType): Promise<GetKnowledgeTagsResType> {
+    const skip = (Number(pagination.page) - 1) * Number(pagination.limit)
+    const take = Number(pagination.limit)
+    const [totalItems, data] = await Promise.all([
+      this.prismaService.knowledgeTag.count({
+        where: { deletedAt: null, knowledgeItemId: pagination.knowledgeItemId },
+      }),
+      this.prismaService.knowledgeTag.findMany({
+        where: { deletedAt: null, knowledgeItemId: pagination.knowledgeItemId },
+        skip,
+        take,
+      }),
+    ])
+    return {
+      data,
+      totalItems,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPages: Math.ceil(totalItems / pagination.limit),
+    }
+  }
+
   findById(id: number) {
     return this.prismaService.knowledgeItem.findUnique({
       where: {
@@ -92,7 +118,7 @@ export class KnowledgeHubRepo {
     })
   }
 
-  create({ data }: { data: UpsertKnowledgeItemBodyType }): Promise<KnowledgeItem> {
+  create({ data }: { data: Omit<UpsertKnowledgeItemBodyType, "tags"> }): Promise<KnowledgeItem> {
     return this.prismaService.knowledgeItem.create({
       data,
     }) as any
@@ -104,7 +130,13 @@ export class KnowledgeHubRepo {
     }) as any
   }
 
-  update({ id, data }: { id: number; data: UpsertKnowledgeItemBodyType }): Promise<KnowledgeItem> {
+  createTag({ data }: { data: UpsertKnowledgeTagBodyType }): Promise<KnowledgeTag> {
+    return this.prismaService.knowledgeTag.create({
+      data,
+    }) as any
+  }
+
+  update({ id, data }: { id: number; data: Omit<UpsertKnowledgeItemBodyType, "tags"> }): Promise<KnowledgeItem> {
     return this.prismaService.knowledgeItem.update({
       where: {
         id,
@@ -124,6 +156,16 @@ export class KnowledgeHubRepo {
     }) as any
   }
 
+  updateTag({ id, data }: { id: number; data: UpsertKnowledgeTagBodyType }): Promise<KnowledgeTag> {
+    return this.prismaService.knowledgeTag.update({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      data,
+    }) as any
+  }
+
   delete(id: number): Promise<KnowledgeItem> {
     return this.prismaService.knowledgeItem.delete({
       where: {
@@ -135,6 +177,15 @@ export class KnowledgeHubRepo {
 
   deleteResource(id: number): Promise<KnowledgeResource> {
     return this.prismaService.knowledgeResource.delete({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    }) as any
+  }
+
+  deleteTag(id: number): Promise<KnowledgeTag> {
+    return this.prismaService.knowledgeTag.delete({
       where: {
         id,
         deletedAt: null,

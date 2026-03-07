@@ -10,10 +10,14 @@ import {
   GetKnowledgeItemsResDTO,
   GetKnowledgeResourcesQueryDTO,
   GetKnowledgeResourcesResDTO,
+  GetKnowledgeTagsQueryDTO,
+  GetKnowledgeTagsResDTO,
   UpsertKnowledgeItemBodyDTO,
   UpsertKnowledgeItemResDTO,
   UpsertKnowledgeResourceBodyDTO,
   UpsertKnowledgeResourceResDTO,
+  UpsertKnowledgeTagBodyDTO,
+  UpsertKnowledgeTagResDTO,
 } from "./knowledge-hub.dto"
 import { slugify } from "src/shared/helpers"
 
@@ -41,6 +45,15 @@ export class KnowledgeHubController {
     })
   }
 
+  @Get("/tags")
+  @ZodResponse({ type: GetKnowledgeTagsResDTO })
+  listTag(@Query() query: GetKnowledgeTagsQueryDTO) {
+    return this.knowledgeHubService.listTag({
+      page: query.page,
+      limit: query.limit,
+    })
+  }
+
   @Get(":itemId")
   //   @ZodResponse({type: GetKnowledgeItemDetailResDTO})
   findById(@Param("itemId") itemId: string) {
@@ -50,7 +63,7 @@ export class KnowledgeHubController {
   @Post()
   @ZodResponse({ type: UpsertKnowledgeItemResDTO })
   create(@Body() body: UpsertKnowledgeItemBodyDTO, @ActiveUser("userId") userId: number) {
-    return this.knowledgeHubService.create({
+    return this.knowledgeHubService.createKnowledgeItem({
       data: {
         ...body,
         userId,
@@ -67,6 +80,16 @@ export class KnowledgeHubController {
         ...body,
         userId,
         slug: slugify(body.title),
+      },
+    })
+  }
+
+  @Post("/tags")
+  // @ZodResponse({ type: UpsertKnowledgeTagResDTO })
+  createTag(@Body() body: UpsertKnowledgeTagBodyDTO) {
+    return this.knowledgeHubService.createTag({
+      data: {
+        ...body,
       },
     })
   }
@@ -88,10 +111,21 @@ export class KnowledgeHubController {
     })
   }
 
+  @Patch("/tags/:tagId")
+  // @ZodResponse({ type: UpsertKnowledgeTagResDTO })
+  updateTag(@Body() body: UpsertKnowledgeTagBodyDTO, @Param("tagId") tagId: string) {
+    return this.knowledgeHubService.updateTag({
+      data: {
+        ...body,
+      },
+      id: Number(tagId),
+    })
+  }
+
   @Patch(":itemId")
   @ZodResponse({ type: UpsertKnowledgeItemResDTO })
   update(@Body() body: UpsertKnowledgeItemBodyDTO, @Param("itemId") itemId: string) {
-    return this.knowledgeHubService.update({
+    return this.knowledgeHubService.updateKnowledgeItem({
       data: {
         ...body,
         slug: slugify(body.title),
@@ -107,9 +141,15 @@ export class KnowledgeHubController {
     return this.knowledgeHubService.deleteResource(Number(resourceId))
   }
 
+  @Delete("/tags/:tagId")
+  @ZodResponse({ type: MessageResDTO })
+  deleteTag(@Param("tagId") tagId: string) {
+    return this.knowledgeHubService.deleteTag(Number(tagId))
+  }
+
   @Delete(":itemId")
   @ZodResponse({ type: MessageResDTO })
   delete(@Param("itemId") itemId: string) {
-    return this.knowledgeHubService.delete(Number(itemId))
+    return this.knowledgeHubService.deleteKnowledgeItem(Number(itemId))
   }
 }
