@@ -21,5 +21,6 @@ export interface KnowledgeItem extends KnowledgeResource {
 
 export interface KnowledgeItemTag {
   id: number;
-  title: string;
+  name: string;
+  knowledgeItemId?: number;
 }

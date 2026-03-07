@@ -9,15 +9,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { KnowledgeItemTag } from "@/interfaces/knowledge-item";
 
 interface TagModalProps {
     isOpen: boolean;
+    tagDetail: KnowledgeItemTag | null
     onClose: () => void;
-    onSave: (tagName: string, color: string) => void;
-    initialTag?: {
-        name: string;
-        color: string;
-    };
+    onSave: ({ name }: { name: string }) => void;
 }
 
 const TAG_COLORS = [
@@ -31,20 +29,19 @@ const TAG_COLORS = [
     { name: "Gray", value: "#6b7280" },
 ];
 
-export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps) => {
-    const [tagName, setTagName] = useState(initialTag?.name || "");
-    const [selectedColor, setSelectedColor] = useState(initialTag?.color || TAG_COLORS[3].value);
+export const TagModal = ({ isOpen, tagDetail, onClose, onSave }: TagModalProps) => {
+    const TAG_COLOR = '#6366F1'
+    const [tagName, setTagName] = useState(tagDetail?.name || "");
 
     const handleSave = () => {
         if (tagName.trim()) {
-            onSave(tagName.trim(), selectedColor);
+            onSave({ name: tagName.trim() });
             handleClose();
         }
     };
 
     const handleClose = () => {
         setTagName("");
-        setSelectedColor(TAG_COLORS[3].value);
         onClose();
     };
 
@@ -58,7 +55,7 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                             <div className="bg-blue-600/20 p-1.5 rounded">
                                 <TagIcon className="h-4 w-4 text-blue-400" />
                             </div>
-                            {initialTag ? "Edit Tag" : "New Tag"}
+                            {tagDetail ? "Chỉnh sửa tag" : "Thêm tag"}
                         </DialogTitle>
                     </div>
                 </DialogHeader>
@@ -68,7 +65,7 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                     {/* Tag Name Input */}
                     <div className="space-y-2 space-x-1.5">
                         <label className="text-sm font-medium text-slate-300">
-                            Tag Name
+                            Tên tag
                         </label>
                         <input
                             type="text"
@@ -80,40 +77,19 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                         />
                     </div>
 
-                    {/* Categorization Color */}
-                    <div className="space-y-3">
-                        <label className="text-sm font-medium text-slate-300">
-                            Categorization Color
-                        </label>
-                        <div className="flex items-center gap-2 flex-wrap !mt-4">
-                            {TAG_COLORS.map((color) => (
-                                <button
-                                    key={color.value}
-                                    onClick={() => setSelectedColor(color.value)}
-                                    className={`w-8 h-8 rounded-full transition-all ${selectedColor === color.value
-                                        ? "ring-2 ring-white ring-offset-2 ring-offset-[#1a2332] scale-110"
-                                        : "hover:scale-105"
-                                        }`}
-                                    style={{ backgroundColor: color.value }}
-                                    title={color.name}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
                     {/* Preview */}
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
-                                Preview:
+                                Xem trước:
                             </span>
                             {tagName.trim() && (
                                 <span
                                     className="text-sm px-3 py-1 rounded-full font-medium max-w-[280px] truncate"
                                     style={{
-                                        backgroundColor: `${selectedColor}33`,
-                                        color: selectedColor,
-                                        border: `1px solid ${selectedColor}66`,
+                                        backgroundColor: `${TAG_COLOR}33`,
+                                        color: TAG_COLOR,
+                                        border: `1px solid ${TAG_COLOR}66`,
                                     }}
                                 >
                                     {tagName}
@@ -121,7 +97,7 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                             )}
                             {!tagName.trim() && (
                                 <span className="text-sm text-slate-500 italic">
-                                    Enter a tag name to see preview
+                                    Nhập tên tag để xem trước
                                 </span>
                             )}
                         </div>
@@ -135,7 +111,7 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                         onClick={handleClose}
                         className="text-slate-400 hover:text-white hover:bg-slate-800/50"
                     >
-                        Cancel
+                        Hủy
                     </Button>
                     <Button
                         onClick={handleSave}
@@ -145,7 +121,7 @@ export const TagModal = ({ isOpen, onClose, onSave, initialTag }: TagModalProps)
                             : "bg-slate-800 text-slate-500 cursor-not-allowed"
                             } shadow-lg`}
                     >
-                        {initialTag ? "Save Changes" : "Create Tag"}
+                        {tagDetail ? "Lưu thay đổi" : "Tạo tag"}
                     </Button>
                 </div>
             </DialogContent>
