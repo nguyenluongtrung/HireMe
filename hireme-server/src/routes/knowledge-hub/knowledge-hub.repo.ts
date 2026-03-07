@@ -115,6 +115,17 @@ export class KnowledgeHubRepo {
         id,
         deletedAt: null,
       },
+      include: {
+        tags: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     })
   }
 
