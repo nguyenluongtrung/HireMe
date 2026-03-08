@@ -18,7 +18,7 @@ type Props = {
 
 const SidebarMenuItem = memo(({ item, collapsed }: Props) => {
     const pathname = usePathname();
-    const isActive = pathname === item.href;
+    const isActive = pathname.startsWith(`${item.href}/`);
 
     return (
         <Link

@@ -3,5 +3,6 @@ export interface Pagination<T> {
     limit: number;
     totalItems: number;
     totalPages: number;
+    hasNextPage?: boolean;
     data: T
 }

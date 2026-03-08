@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder, MoreHorizontal, FilePlus, Trash, Pencil } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -16,30 +16,54 @@ import { KnowledgeItemType } from "@/contants/enums";
 import { EditFolderModal } from "@/components/modals/EditFolderModal";
 
 import { KnowledgeResource } from "@/interfaces/knowledge-item";
+import useDebounceText from "@/hooks/debounce/useDebounceText";
+import Spinner from "@/components/ui/spinner";
+import { useParams } from "next/navigation";
 
 interface SidebarProps {
     selectedNoteId: number | null;
-    onSelectNote: (id: number) => void;
     collapsed: boolean;
+    onSelectNote: (itemId: number, resourceId: number) => void;
     onToggleCollapse: () => void;
 }
 
-export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProps) => {
+export const Sidebar = ({ selectedNoteId, collapsed, onSelectNote }: SidebarProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["all"]));
+    const { "resource-id": resourceId } = useParams<{ "item-id": string; "resource-id": string }>();
 
     const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
     const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
     const [selectedFolder, setSelectedFolder] = useState<KnowledgeResource | null>(null);
 
-    const { data: knowledgeResources } = useKnowledgeResourceList({
-        page: 1,
-        limit: 30,
-        searchDebounce: searchQuery,
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+    const searchDebounce = useDebounceText(searchQuery, 300)
+
+    const { data: knowledgeResources, fetchNextPage, hasNextPage, isFetchingNextPage, } = useKnowledgeResourceList({
+        limit: 10,
+        searchDebounce,
     });
 
     const { handleCreateKnowledgeResource, handleDeleteKnowledgeResource, handleUpdateKnowledgeResource } = useKnowledgeResourceForm();
     const { handleCreateKnowledgeItem } = useKnowledgeItemForm({});
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasNextPage) {
+                    fetchNextPage();
+                }
+            },
+            { threshold: 1 }
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [fetchNextPage, hasNextPage]);
 
     const handleCreateFolder = (folderName: string) => {
         handleCreateKnowledgeResource({ title: folderName, type: KnowledgeItemType.FOLDER });
@@ -54,6 +78,12 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
         }
         setExpandedFolders(newExpanded);
     };
+
+    useEffect(() => {
+        if (resourceId && !expandedFolders.has(String(resourceId))) {
+            setExpandedFolders(new Set([String(resourceId)]));
+        }
+    }, [resourceId, expandedFolders]);
 
     return (
         <div
@@ -85,7 +115,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
             {/* Folders */}
             <div className="flex-1 max-h-[calc(100vh-135px)] overflow-y-auto">
                 <div className="p-2">
-                    {knowledgeResources?.data.length ? knowledgeResources?.data?.map((resource) => {
+                    {knowledgeResources?.length ? knowledgeResources?.map((resource) => {
                         const isExpanded = expandedFolders.has(String(resource.id));
 
                         return (
@@ -103,7 +133,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                         <Folder className="h-4 w-4 text-blue-400" />
                                         <span className="flex-1 text-left text-sm font-medium max-w-full truncate">{resource.title}</span>
                                         <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full">
-                                            {resource.items.length}
+                                            {resource?.items?.length}
                                         </span>
                                     </button>
 
@@ -165,7 +195,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            handleDeleteKnowledgeResource(resource.id);
+                                                            handleDeleteKnowledgeResource(resource.id || 0);
                                                         }}
                                                         className="flex items-center gap-3 p-2 hover:bg-red-500/10 rounded-md transition-colors text-left group/delete hover:cursor-pointer"
                                                     >
@@ -189,7 +219,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                                         {resource?.items?.map((item) => (
                                             <button
                                                 key={item.id}
-                                                onClick={() => onSelectNote(item?.id || 0)}
+                                                onClick={() => onSelectNote(item?.id || 0, resource?.id || 0)}
                                                 className={cn(
                                                     "w-full text-left px-3 py-2 rounded-lg transition-all duration-200 hover:cursor-pointer group",
                                                     selectedNoteId == item.id
@@ -224,6 +254,9 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                     }) : <div>
                         <p className="px-3 py-2 text-sm text-slate-500 text-center">Không có thư mục</p>
                     </div>}
+                    <div ref={loadMoreRef} className="h-6 flex justify-center">
+                        {isFetchingNextPage && <Spinner />}
+                    </div>
                 </div>
             </div>
 
@@ -241,7 +274,7 @@ export const Sidebar = ({ selectedNoteId, onSelectNote, collapsed }: SidebarProp
                     onClose={() => setIsEditFolderModalOpen(false)}
                     onConfirm={(folderName) => {
                         if (selectedFolder) {
-                            handleUpdateKnowledgeResource(selectedFolder.id, {
+                            handleUpdateKnowledgeResource(selectedFolder.id || 0, {
                                 title: folderName,
                             });
                         }
