@@ -60,6 +60,7 @@ export const GetKnowledgeTagsQuerySchema = PaginationQuerySchema.extend({
 
 export const GetKnowledgeResourcesQuerySchema = PaginationQuerySchema.extend({
   userId: z.coerce.number().optional(),
+  title: z.string().optional(),
 })
 
 export const UpsertKnowledgeItemBodySchema = KnowledgeItemSchema.omit({

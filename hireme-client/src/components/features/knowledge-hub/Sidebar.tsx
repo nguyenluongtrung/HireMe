@@ -1,24 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, FolderPlus, ChevronRight, ChevronDown, FileText, Folder, MoreHorizontal, FilePlus, Trash, Pencil } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CreateFolderModal } from "../../modals/CreateFolderModal";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Spinner from "@/components/ui/spinner";
 
 import { cn } from "@/lib/utils";
 
 import useKnowledgeResourceForm from "@/hooks/knowledge-hub/useKnowledgeResourceForm";
 import useKnowledgeItemForm from "@/hooks/knowledge-hub/useKnowledgeItemForm";
 import useKnowledgeResourceList from "@/hooks/knowledge-hub/useKnowledgeResourceList";
+import useDebounceText from "@/hooks/debounce/useDebounceText";
 
 import { KnowledgeItemType } from "@/contants/enums";
 import { EditFolderModal } from "@/components/modals/EditFolderModal";
 
 import { KnowledgeResource } from "@/interfaces/knowledge-item";
-import useDebounceText from "@/hooks/debounce/useDebounceText";
-import Spinner from "@/components/ui/spinner";
-import { useParams } from "next/navigation";
 
 interface SidebarProps {
     selectedNoteId: number | null;

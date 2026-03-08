@@ -13,6 +13,7 @@ export const PaginationResSchema = (schema: z.ZodType<any>) => z.object({
     page: z.number(),
     limit: z.number(),
     totalPages: z.number(),
+    hasNextPage: z.boolean().optional(),
 })
 
 export type PaginationQueryType = z.infer<typeof PaginationQuerySchema>

@@ -53,26 +53,28 @@ export class KnowledgeHubRepo {
     const skip = (Number(pagination.page) - 1) * Number(pagination.limit)
     const take = Number(pagination.limit)
     const userId = Number(pagination.userId)
+    const title = pagination.title
     const [totalItems, data] = await Promise.all([
       this.prismaService.knowledgeResource.count({ where: { deletedAt: null, userId } }),
       this.prismaService.knowledgeResource.findMany({
-        where: { deletedAt: null, userId },
+        where: {
+          deletedAt: null,
+          userId,
+          ...(title
+            ? {
+                title: {
+                  contains: title,
+                  mode: "insensitive",
+                },
+              }
+            : {}),
+        },
         skip,
         take,
-        select: {
-          id: true,
-          title: true,
-          type: true,
+        include: {
           items: {
             where: {
               deletedAt: null,
-            },
-            select: {
-              id: true,
-              title: true,
-              type: true,
-              isFavorite: true,
-              isArchived: true,
             },
           },
         },
@@ -84,6 +86,7 @@ export class KnowledgeHubRepo {
       page: pagination.page,
       limit: pagination.limit,
       totalPages: Math.ceil(totalItems / pagination.limit),
+      hasNextPage: pagination.page < Math.ceil(totalItems / pagination.limit),
     }
   }
 
@@ -153,7 +156,15 @@ export class KnowledgeHubRepo {
         id,
         deletedAt: null,
       },
-      data,
+      data: {
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        type: data.type,
+        knowledgeResourceId: data.knowledgeResourceId,
+        isFavorite: data.isFavorite,
+        isArchived: data.isArchived,
+      },
     }) as any
   }
 
