@@ -41,6 +41,7 @@ export class KnowledgeHubController {
     return this.knowledgeHubService.listResource({
       page: query.page,
       limit: query.limit,
+      title: query.title,
       userId,
     })
   }
